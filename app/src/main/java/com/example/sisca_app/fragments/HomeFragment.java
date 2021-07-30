@@ -1,19 +1,27 @@
 package com.example.sisca_app.fragments;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.sisca_app.MainActivity;
 import com.example.sisca_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +47,7 @@ public class HomeFragment extends Fragment {
         // Required empty   public constructor
     }
 
-    private TextView patientNickName,bpmValue;
+    private TextView patientNickName,bpmValue, conditionValue;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
     private String userId,bpm;
@@ -56,6 +64,7 @@ public class HomeFragment extends Fragment {
         patientNickName = (TextView) view.findViewById(R.id.patient_home_name);
         relayButton = (Button) view.findViewById(R.id.relay_button);
         bpmValue = (TextView) view.findViewById(R.id.bpm_value);
+        conditionValue = (TextView) view.findViewById(R.id.condition);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
@@ -81,6 +90,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
         relayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +107,7 @@ public class HomeFragment extends Fragment {
         });
         return view;
     }
+
 
     private void sendRelayCommand(final String relayState)
     {

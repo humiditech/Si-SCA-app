@@ -3,13 +3,14 @@
     android:layout_width="370dp"
     android:layout_height="600dp"
     android:layout_gravity="center"
+    android:id="@+id/alert_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="30dp"
+        app:cardCornerRadius="50dp"
         >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
