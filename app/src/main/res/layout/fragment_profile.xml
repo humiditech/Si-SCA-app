@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.ProfileFragment"
+    android:background="@drawable/background_baru">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/gambar_pasien"
+            app:layout_constraintBottom_toBottomOf="@id/fullname_label"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="-80dp" />
+
+        <TextView
+            android:id="@+id/fullname_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/profile_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Fullname"
+            android:textSize="27dp"
+            android:textStyle="bold"
+            android:textColor="@color/pale_green"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/patient_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/fullname_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Rizky Chandra Maulana"
+            android:textSize="17dp"
+            android:gravity="center_horizontal"/>
+        <TextView
+            android:id="@+id/nickname_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/patient_name"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Nickname"
+            android:textSize="27dp"
+            android:textStyle="bold"
+            android:textColor="@color/pale_green"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/patient_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/nickname_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Chandra"
+            android:textSize="17dp"
+            android:gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/address_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/patient_nickname"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Address"
+            android:textSize="27dp"
+            android:textStyle="bold"
+            android:textColor="@color/pale_green"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/address_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Kota Malang"
+            android:textSize="17dp"
+            android:gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/age_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/address"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Age"
+            android:textSize="27dp"
+            android:textStyle="bold"
+            android:textColor="@color/pale_green"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/age_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="21"
+            android:textSize="17dp"
+            android:gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/doctor_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/age"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="Patient of"
+            android:textSize="27dp"
+            android:textStyle="bold"
+            android:textColor="@color/pale_green"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/doctor_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/doctor_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="dr. Anita Dominique"
+            android:textSize="17dp"
+            android:gravity="center_horizontal"/>
+
+        <Button
+            android:id="@+id/show_qr_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/doctor_name"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="My QR Code"
+            android:textAllCaps="false"
+            android:gravity="center_horizontal"/>
+
+        <Button
+            android:id="@+id/logout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log Out"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/red"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</RelativeLayout>

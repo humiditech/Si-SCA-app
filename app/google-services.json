@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "223192657492",
+    "project_id": "sisca-app-67dfd",
+    "storage_bucket": "sisca-app-67dfd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223192657492:android:fe18f596ad04da452987c1",
+        "android_client_info": {
+          "package_name": "com.example.sisca_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223192657492-trjok8k0vph0hg7dkgf8rqvsbgp8ouvg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB10OqkzF87gD42eJ3fGrKNjJqX-tYznKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223192657492-trjok8k0vph0hg7dkgf8rqvsbgp8ouvg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
