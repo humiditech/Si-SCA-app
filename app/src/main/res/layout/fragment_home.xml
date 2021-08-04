@@ -65,6 +65,15 @@
             android:layout_marginRight="20dp"
             app:cardBackgroundColor="@color/pale_green"
             app:cardCornerRadius="40dp">
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graphview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+<!--            <com.github.mikephil.charting.charts.LineChart-->
+<!--                android:id="@+id/linechart"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"/>-->
 
         </androidx.cardview.widget.CardView>
 
