@@ -53,6 +53,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -106,28 +107,42 @@ public class HomeFragment extends Fragment {
         relayButton = (Button) view.findViewById(R.id.relay_button);
         bpmValue = (TextView) view.findViewById(R.id.bpm_value);
         conditionValue = (TextView) view.findViewById(R.id.condition);
-        graphView = (GraphView) view.findViewById(R.id.graphview);
+//        graphView = (GraphView) view.findViewById(R.id.graphview);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
 
+//        graphView.addSeries(series);
+//        graphView.getViewport().setScrollable(true);
+//        graphView.getViewport().setScrollableY(true);
+//        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
+//            @Override
+//            public String formatLabel(double value, boolean isValueX) {
+//                if(isValueX)
+//                {
+//                    return sdf.format(new Date((long) value));
+//                }
+//                else{
+//                    return super.formatLabel(value, isValueX);
+//                }
+//            }
+//        });
+//        graphView.getGridLabelRenderer().setNumHorizontalLabels(3);
+//        graphView.getGridLabelRenderer().setHumanRounding(false);
 
-
-
-
-        graphView.getViewport().setScrollable(true);
-        graphView.getViewport().setScrollableY(true);
-        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if(isValueX)
-                {
-                    Date currentTime = Calendar.getInstance().getTime();
-                    return sdf.format(currentTime.getTime());
-                }
-                return super.formatLabel(value, isValueX);
-            }
-        });
+//        graphView.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+//            @Override
+//            public String formatLabel(double value, boolean isValueX) {
+//                if(isValueX)
+//                {
+//                    Date currentTime = Calendar.getInstance().getTime();
+//                    return sdf.format(currentTime.getTime());
+//                }
+//                else{
+//                    return super.formatLabel(value, isValueX);
+//                }
+//            }
+//        });
 
         DocumentReference documentReference = fStore.collection("users").document(userId);
         documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
@@ -144,7 +159,6 @@ public class HomeFragment extends Fragment {
                 bpm = snapshot.child("ecgBPM").getValue().toString();
                 bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
                 bpmValue.setText(bpm);
-                Log.d("myLOG", String.valueOf(bpmInt));
             }
 
             @Override
@@ -161,10 +175,7 @@ public class HomeFragment extends Fragment {
                     Date currentTime = Calendar.getInstance().getTime();
                     epoch = currentTime.getTime();
                     Log.d("myLOG", String.valueOf(epoch));
-                    series = new LineGraphSeries<>(new DataPoint[] {
-                            new DataPoint(epoch,50)
-                    });
-                    graphView.addSeries(series);
+                    series = new LineGraphSeries<>(new DataPoint[]{});
 
                 }
                 mHandler.postDelayed(this,1000);

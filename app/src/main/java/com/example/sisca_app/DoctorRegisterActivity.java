@@ -23,34 +23,34 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity {
-    private EditText rFullName, rNickName, rDoctorName, rAddress, rAge, rEmailAddress, rPassword;
-    private Button rButton,rDoctorButton;
+public class DoctorRegisterActivity extends AppCompatActivity {
+
+    private EditText rFullName, rNickName, rAddress, rAge, rEmailAddress, rPassword;
+    private Button rButton;
     private TextView rLogin;
     private ProgressBar rProgressBar;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String rUserID;
-
+    private String rDoctorID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_doctor_register);
 
-        rFullName = findViewById(R.id.fullname_register);
-        rNickName = findViewById(R.id.nickname_register);
-        rDoctorName = findViewById(R.id.doctor_name_register);
-        rAddress = findViewById(R.id.address_register);
-        rAge = findViewById(R.id.age_register);
-        rEmailAddress = findViewById(R.id.email_register);
-        rPassword = findViewById(R.id.password_register);
-        rLogin = findViewById(R.id.already_registered);
-        rButton = findViewById(R.id.register_button);
-        rDoctorButton = findViewById(R.id.register_doctor);
-        rProgressBar = findViewById(R.id.progress_bar_register);
+        rFullName = findViewById(R.id.d_fullname_register);
+        rNickName = findViewById(R.id.d_nickname_register);
+        rAddress = findViewById(R.id.d_address_register);
+        rAge = findViewById(R.id.d_age_register);
+        rEmailAddress = findViewById(R.id.d_email_register);
+        rPassword = findViewById(R.id.d_password_register);
+        rLogin = findViewById(R.id.d_already_registered);
+        rButton = findViewById(R.id.d_register_button);
+        rProgressBar = findViewById(R.id.d_progress_bar_register);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
 
@@ -67,51 +67,49 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = rPassword.getText().toString().trim();
                 String fullName = rFullName.getText().toString().trim();
                 String nickName = rNickName.getText().toString().trim();
-                String doctorName = rDoctorName.getText().toString().trim();
                 String address = rAddress.getText().toString().trim();
                 String age = rAge.getText().toString().trim();
-
 
                 if(TextUtils.isEmpty(email)){
                     rEmailAddress.setError("Email is required");
                     return;
                 }
 
-                if(TextUtils.isEmpty(password)){
+                if(TextUtils.isEmpty(password))
+                {
                     rPassword.setError("Password is required");
                     return;
                 }
 
-                if(password.length() < 8){
+                if(password.length() < 8)
+                {
                     rPassword.setError("Password must be at least 8 character");
                     return;
                 }
 
                 rProgressBar.setVisibility(View.VISIBLE);
 
-                // Register using Firebase
-
                 fAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(RegisterActivity.this, "Registration Success", Toast.LENGTH_SHORT).show();
-                            rUserID = fAuth.getCurrentUser().getUid();
-                            DocumentReference documentReference = fStore.collection("users").document(rUserID);
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("fName",fullName);
-                            user.put("nName",nickName);
-                            user.put("dName",doctorName);
-                            user.put("addr",address);
-                            user.put("age",age);
-                            user.put("emailAddr",email);
-                            user.put("uid",rUserID);
-                            user.put("imageURL", "default");
-                            user.put("role","patient");
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        if(task.isSuccessful())
+                        {
+                            Toast.makeText(DoctorRegisterActivity.this, "Registration Success", Toast.LENGTH_SHORT).show();
+                            rDoctorID = fAuth.getCurrentUser().getUid();
+                            DocumentReference documentReference = fStore.collection("doctors").document(rDoctorID);
+                            Map<String, Object> doctor = new HashMap<>();
+                            doctor.put("fName",fullName);
+                            doctor.put("nName",nickName);
+                            doctor.put("addr",address);
+                            doctor.put("age",age);
+                            doctor.put("emailAddr",email);
+                            doctor.put("uid", rDoctorID);
+                            doctor.put("imageURL","default");
+                            doctor.put("role","doctor");
+                            documentReference.set(doctor).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d("myDebug","onSuccess : user profile is created for " + rUserID);
+                                    Log.d("myDebug", "onSuccess : docto profile is created for " + rDoctorID);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -121,28 +119,13 @@ public class RegisterActivity extends AppCompatActivity {
                             });
                             startActivity(new Intent(getApplicationContext(),LoginActivity.class));
                         }
-                        else{
-                            Toast.makeText(RegisterActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        else {
+                            Toast.makeText(DoctorRegisterActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             rProgressBar.setVisibility(View.INVISIBLE);
                         }
                     }
                 });
-            }
-        });
 
-        rDoctorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),DoctorRegisterActivity.class));
-                finish();
-            }
-        });
-
-        rLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                finish();
             }
         });
     }
