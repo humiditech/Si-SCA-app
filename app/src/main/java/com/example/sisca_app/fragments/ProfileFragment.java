@@ -86,7 +86,7 @@ public class ProfileFragment extends Fragment {
                 patientNickName.setText(value.getString("nName"));
                 patientAddress.setText(value.getString("addr"));
                 patientAge.setText(value.getString("age"));
-                patientDoctorName.setText(value.getString("dName"));
+                patientDoctorName.setText("dr." + value.getString("dName"));
             }
         });
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_doctor_navigation"
+    app:startDestination="@id/fragmentHomeDoctor"
+    >
+
+    <fragment
+        android:id="@+id/fragmentHomeDoctor"
+        android:name="com.example.sisca_app.fragments.DoctorHomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_doctor_home" />
+    <fragment
+        android:id="@+id/fragmentChatDoctor"
+        android:name="com.example.sisca_app.fragments.DoctorChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_doctor_chat" />
+    <fragment
+        android:id="@+id/fragmentHistoryDoctor"
+        android:name="com.example.sisca_app.fragments.DoctorHistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_doctor_history" />
+    <fragment
+        android:id="@+id/fragmentProfileDoctor"
+        android:name="com.example.sisca_app.fragments.DoctorProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_doctor_profile" />
+
+</navigation>

@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.sisca_app.Adapters.ChatAdapter;
 import com.example.sisca_app.Adapters.UserAdapter;
 import com.example.sisca_app.Models.ChatsModel;
+import com.example.sisca_app.Models.DoctorsModel;
 import com.example.sisca_app.Models.UsersModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -93,21 +94,20 @@ public class ChatActivity extends AppCompatActivity {
         fUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        DocumentReference reference = fStore.collection("users").document(friendId);
+        DocumentReference reference = fStore.collection("doctors").document(friendId);
         reference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                UsersModel user = value.toObject(UsersModel.class);
-                usernameOnToolbar.setText(user.getnName());
+                DoctorsModel doctor = value.toObject(DoctorsModel.class);
+                usernameOnToolbar.setText(doctor.getnName());
 
-                if (user.getImageURL().equals("default")) {
+                if (doctor.getImageURL().equals("default")) {
                     imageViewOnToolbar.setImageResource(R.drawable.ic_baseline_person_24);
                 } else {
-                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(imageViewOnToolbar);
+                    Glide.with(getApplicationContext()).load(doctor.getImageURL()).into(imageViewOnToolbar);
                 }
 
                 readMessage(myId, friendId);
-
 
             }
         });

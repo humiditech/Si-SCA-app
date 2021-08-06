@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Siscaapp">
-        <activity android:name=".DoctorRegisterActivity"></activity>
+        <activity android:name=".DoctorMainActivity"></activity>
+        <activity android:name=".DoctorRegisterActivity" />
         <activity
             android:name=".ChatActivity"
             android:parentActivityName=".MainActivity" />

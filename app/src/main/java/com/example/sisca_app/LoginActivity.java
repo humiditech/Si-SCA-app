@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (document.exists()) {
                                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                                             Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                            startActivity(new Intent(getApplicationContext(),DoctorMainActivity.class));
                                         } else {
                                             Log.d("TAG", "No such document");
                                             Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
@@ -192,32 +192,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        fUser = FirebaseAuth.getInstance().getCurrentUser();
-
-//        personID = fAuth.getCurrentUser().getUid();
-//        DocumentReference documentReference = fStore.collection("users").document(personID);
-//        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-//                if(value.getString("role").equals("patient"))
-//                {
-//                    Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
-//                }
-//                else {
-//                    Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
-//                    startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-//                }
-//            }
-//        });
-//        if(fUser != null)
-//        {
-//            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-//        }
-    }
 
 
 }
