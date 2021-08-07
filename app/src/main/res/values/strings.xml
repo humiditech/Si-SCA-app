@@ -1,8 +1,40 @@
 <resources>
     <string name="app_name">Si-SCA App</string>
+    <string name="app_version">"Ver 0.1"</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="ok_button">Ok</string>
-    <string name="ok_overall_condition">Kondisi jantung kondusif dan normal</string>
-    <string name="max_overall_condition">Tekanan darah terlalu tinggi</string>
-    <string name="min_overall_condition">Tekanan darah terlalu rendah</string>
+    <!--    Heart Rate-->
+    <!--    a. Frequency-->
+    <!--    Bradycardia: <60 bpm-->
+    <!--    Normal: 60-100 bpm-->
+    <!--    Tachycardia: >100 bpm-->
+
+    <!--    b. Physical Intensity-->
+    <!--    a.	Maximum Heart Rate-->
+    <!--    HR max = 220 – age-->
+    <!--    b.	Green: Very Light-Light Physical Activity Intensity = (<50% - 63%)*HR Max-->
+    <!--    c.	Yellow: Moderate Physical Activity Intensity = (64%-76%) * HR max-->
+    <!--    d.	Red: Hard/Vigorous Physical Activity Intensity = (77%-93%) * HR max-->
+    <!--    e.	Danger: Very Hard – Maximum = (94%-100%) * HR Max-->
+
+    <!--    Rhythm-->
+    <!--    Regular rhythm-->
+    <!--    Irregular Rhythm-->
+
+    <!--    Report-->
+    <!--    1. Your heart beats Normal/Too slow (bradycardia)/Too fast (Tachycardia) Heart Rate-->
+    <!--    Tachy/bradycardia > Alert, need for evaluation-->
+
+    <!--    2. Your current physical intensity state: Light/Moderate/Vigorous Physical Activity or Dangerous (Maximum Heart Rate)-->
+    <!--    Dangerous > please take a rest immediately!-->
+
+    <!--    3. Your heart rhythm is regular-->
+    <!--    If irregular > warning signal, contact your doctor-->
+
+    <!--    Tachycardia + Irregular rhythm > emergency signal-->
+    <string name="normal_condition">Your heart beats is normal</string>
+    <string name="tachycardia_condition">Your heart beats is too fast</string>
+    <string name="bradycardia_condition">Your heart beat is too slow</string>
+    <string name="regular_rythm">have regular rythm</string>
+    <string name="irregular_rythm">have irregular rythm</string>
+
 </resources>
