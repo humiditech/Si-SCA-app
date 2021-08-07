@@ -9,10 +9,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -87,11 +89,11 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
     private String userId, bpm;
-    private Button relayButton;
     private String relayState = "OFF";
     private DatabaseReference reference;
     private Long epoch;
     private Integer bpmInt;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,14 +101,10 @@ public class HomeFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         if (container == null) return null;
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_home, container, false);
-
-
-
-        // ------------
         patientNickName = (TextView) view.findViewById(R.id.patient_home_name);
-        relayButton = (Button) view.findViewById(R.id.relay_button);
         bpmValue = (TextView) view.findViewById(R.id.bpm_value);
         conditionValue = (TextView) view.findViewById(R.id.condition);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 //        graphView = (GraphView) view.findViewById(R.id.graphview);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -153,19 +151,6 @@ public class HomeFragment extends Fragment {
         });
 
         reference = FirebaseDatabase.getInstance().getReference().child("Sensor");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                bpm = snapshot.child("ecgBPM").getValue().toString();
-                bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
-                bpmValue.setText(bpm);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -182,20 +167,6 @@ public class HomeFragment extends Fragment {
             }
         },1000);
 
-
-        relayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (relayState == "OFF") {
-                    relayState = "ON";
-                    sendRelayCommand(relayState);
-                } else {
-                    relayState = "OFF";
-                    sendRelayCommand(relayState);
-                }
-            }
-        });
-
         return view;
     }
 
@@ -209,12 +180,15 @@ public class HomeFragment extends Fragment {
         super.onStart();
 
         reference.addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 bpm = snapshot.child("ecgBPM").getValue().toString();
                 bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
                 bpmValue.setText(bpm);
-                Log.d("myLOG", String.valueOf(bpmInt));
+                progressBar.setProgress(bpmInt);
+                progressBar.setMin(80);
+                progressBar.setMax(120);
             }
 
             @Override

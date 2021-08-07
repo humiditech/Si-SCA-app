@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.sisca_app.ChatActivity;
+import com.example.sisca_app.DoctorChatActivity;
 import com.example.sisca_app.Models.UsersModel;
 import com.example.sisca_app.R;
 import com.example.sisca_app.fragments.ChatFragment;
@@ -81,7 +82,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
         {
             UsersModel user = usersList.get(getAdapterPosition());
             friendId = user.getUid();
-            Intent intent = new Intent(context, ChatActivity.class);
+            Intent intent = new Intent(context, DoctorChatActivity.class);
             intent.putExtra("friendId",friendId);
             context.startActivity(intent);
         }

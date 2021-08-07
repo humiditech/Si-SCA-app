@@ -1,14 +1,355 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_baru"
     tools:context=".fragments.DoctorHistoryFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Doctor History Fragment" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/doctor_history_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/gambar_dokter"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/greetings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="cursive"
+                android:text="Hello Doc!"
+                android:textColor="#FFF"
+                android:textSize="50dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/doctor_history_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text = "Anita Dominique"
+                android:textColor="#FFF"
+                android:textSize="35dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/patient_card_label"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="180dp"
+            android:layout_marginRight="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/gambar_pasien"/>
+                
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/patient_history_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:text="Chandra M"
+                        android:textSize="25dp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/patient_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:text="21 years old"
+                        android:textSize="20dp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/datepicker_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Date"
+                    android:textSize="20dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:backgroundTint="@color/pale_green"
+                app:cardCornerRadius="40dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/heart_beat" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/progressBar_history"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:progressDrawable="@drawable/linear_gauge_bpm"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Min"
+                        android:textSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@id/progressBar_history"
+                        app:layout_constraintLeft_toLeftOf="@id/low_bpm"
+                        app:layout_constraintRight_toRightOf="@id/low_bpm"
+                        app:layout_constraintTop_toTopOf="@id/low_bpm" />
+
+                    <TextView
+                        android:id="@+id/low_bpm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:text="80"
+                        android:textColor="#EE0000"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/progressBar_history" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="bpm"
+                        android:textSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@id/low_bpm"
+                        app:layout_constraintLeft_toLeftOf="@id/low_bpm"
+                        app:layout_constraintRight_toRightOf="@id/low_bpm"
+                        app:layout_constraintTop_toBottomOf="@id/low_bpm" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Avg"
+                        android:textSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@id/progressBar_history"
+                        app:layout_constraintLeft_toLeftOf="@id/med_bpm"
+                        app:layout_constraintRight_toRightOf="@id/med_bpm"
+                        app:layout_constraintTop_toTopOf="@id/med_bpm" />
+
+                    <TextView
+                        android:id="@+id/med_bpm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100"
+                        android:textColor="@color/green_navy"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toRightOf="@id/low_bpm"
+                        app:layout_constraintRight_toLeftOf="@id/high_bpm"
+                        app:layout_constraintTop_toBottomOf="@id/progressBar_history" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="bpm"
+                        android:textSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@id/med_bpm"
+                        app:layout_constraintLeft_toLeftOf="@id/med_bpm"
+                        app:layout_constraintRight_toRightOf="@id/med_bpm"
+                        app:layout_constraintTop_toBottomOf="@id/med_bpm" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Max"
+                        android:textSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@id/progressBar_history"
+                        app:layout_constraintLeft_toLeftOf="@id/high_bpm"
+                        app:layout_constraintRight_toRightOf="@id/high_bpm"
+                        app:layout_constraintTop_toTopOf="@id/high_bpm" />
+
+                    <TextView
+                        android:id="@+id/high_bpm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="12dp"
+                        android:text="120"
+                        android:textColor="@color/bronze"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/progressBar_history" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="bpm"
+                        android:textSize="10dp"
+                        app:layout_constraintBottom_toBottomOf="@id/high_bpm"
+                        app:layout_constraintLeft_toLeftOf="@id/high_bpm"
+                        app:layout_constraintRight_toRightOf="@id/high_bpm"
+                        app:layout_constraintTop_toBottomOf="@id/high_bpm" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            >
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bpm_circular_gauge_card"
+                android:layout_width="156dp"
+                android:layout_height="200dp"
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@color/pale_green"
+                app:cardCornerRadius="40dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                tools:ignore="MissingConstraints">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/heart_beat_2"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15dp"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/ring"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:id="@+id/bpm_value_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="120"
+                        android:textColor="@color/bronze"
+                        android:textSize="40dp"
+                        android:textStyle="bold"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="20dp"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="bpm"
+                        android:textSize="25dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="58dp"
+                        />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="137dp"
+                    android:layout_height="137dp"
+                    android:background="@drawable/blackring"
+                    android:layout_gravity="center"/>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/status_card"
+                android:layout_width="156dp"
+                android:layout_height="200dp"
+                app:cardBackgroundColor="@color/pale_green"
+                app:layout_constraintRight_toRightOf="parent"
+                app:cardCornerRadius="40dp"
+                tools:ignore="MissingConstraints">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/heart_status"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="15dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18dp"
+                        android:text="Condition"
+                        android:textColor="@color/bronze"
+                        android:fontFamily="sans-serif-condensed"
+                        android:gravity="center_horizontal" />
+                    <TextView
+                        android:id="@+id/condition_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:text="OK"
+                        android:textSize="25dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/green_navy"
+                        android:gravity="center_horizontal"
+                        android:background="@drawable/status_rect"
+                        />
+
+                    <TextView
+                        android:id="@+id/condition_description_history"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Kondisi jantung kondusif dan normal"
+                        android:gravity="center_horizontal"
+                        android:textColor="#fff"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"/>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

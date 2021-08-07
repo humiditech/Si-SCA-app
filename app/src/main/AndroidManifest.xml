@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Siscaapp">
-        <activity android:name=".DoctorMainActivity"></activity>
+        <activity android:name=".DoctorChatActivity"></activity>
+        <activity android:name=".DoctorMainActivity" />
         <activity android:name=".DoctorRegisterActivity" />
         <activity
             android:name=".ChatActivity"
