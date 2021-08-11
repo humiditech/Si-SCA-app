@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sisca_app.fragments.HomeFragment;
 import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,7 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     private String userId;
     private Integer patientAge;
@@ -70,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
                 patientParamsRef.child("age").setValue(patientAge);
             }
         });
-
-
 
     }
 
