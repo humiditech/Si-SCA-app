@@ -53,35 +53,26 @@ import io.perfmark.Tag;
 
 public class HomeFragment extends Fragment {
 
-
-    public HomeFragment() {
-        // Required empty   public constructor
-    }
-
     private boolean wasRun = true;
     private GraphView graphView;
-
-    private static final Random RANDOM = new Random();
     private LineGraphSeries<DataPoint> series;
     private int lastX = 0;
-
-    private HashMap<String, String> hashMap;
-
-    private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
     private TextView patientNickName, bpmValue, conditionValue, conditionDescription, highBPMtv, medBPMtv;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
     private String userId, bpm, rrDetection;
     private String relayState = "OFF";
     private DatabaseReference sensorReference, patientParamsReference;
-    private Long epoch;
     private Integer bpmInt, hrMax, patientAge;
-    private Integer count;
     private double lightThres, moderateThres, hardThres;
     private ProgressBar progressBar;
     private MultiColorCircle colorRing;
     public Queue dataECG = new LinkedList();
     public Integer bpmIntValue;
+
+    public HomeFragment() {
+        // Required empty   public constructor
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,7 +92,6 @@ public class HomeFragment extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
-        count = 0;
         bpmIntValue = 0;
 
         colorRing.setWidthOfCircleStroke(15);
@@ -188,15 +178,6 @@ public class HomeFragment extends Fragment {
 
             }
         }).start();
-//        graphUpdater = new MyThread();
-//        graphUpdater.start();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
     }
 
     private void addEntry(Integer value) {
@@ -250,8 +231,14 @@ public class HomeFragment extends Fragment {
                         } else if (rrDetection.equals("ABNORMAL")) {
                             conditionDescription.setText("Your heartbeat normal and have irregular rythm");
                         }
-                        conditionValue.setText("Normal");
-                        conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
+                        if(bpmInt< 100)
+                        {
+                            conditionValue.setText("Normal");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
+                        } else {
+                            conditionValue.setText("Tachycardia");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                        }
                     } else if (bpmInt > lightThres && bpmInt <= moderateThres) {
                         MultiColorCircle.CustomStrokeObject s = new MultiColorCircle.CustomStrokeObject(100, 0, ContextCompat.getColor(getContext(), R.color.bronze));
                         List<MultiColorCircle.CustomStrokeObject> myList = new ArrayList<>();
@@ -263,8 +250,14 @@ public class HomeFragment extends Fragment {
                         } else if (rrDetection.equals("ABNORMAL")) {
                             conditionDescription.setText("Your heartbeat is normal and have irregular rythm");
                         }
-                        conditionValue.setText("Normal");
-                        conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
+                        if(bpmInt< 100)
+                        {
+                            conditionValue.setText("Normal");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
+                        } else {
+                            conditionValue.setText("Tachycardia");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                        }
                     } else if (bpmInt > moderateThres) {
                         MultiColorCircle.CustomStrokeObject s = new MultiColorCircle.CustomStrokeObject(100, 0, ContextCompat.getColor(getContext(), R.color.red));
                         List<MultiColorCircle.CustomStrokeObject> myList = new ArrayList<>();

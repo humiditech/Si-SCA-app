@@ -53,10 +53,6 @@ public class MainActivity extends AppCompatActivity  {
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
 
-    public static final Random RANDOM = new Random();
-    public LineGraphSeries<DataPoint> series;
-    public int lastX = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +61,6 @@ public class MainActivity extends AppCompatActivity  {
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
         NavController navController = Navigation.findNavController(this,R.id.fragment);
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
-
-        series = new LineGraphSeries<DataPoint>();
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();

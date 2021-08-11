@@ -7,6 +7,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -26,9 +27,12 @@ public class DoctorMainActivity extends AppCompatActivity {
 
     private String imuStatus,rrStatus;
     private ImageView startDefib, cancelDefib;
+    private Integer bpmInt,patientAge,hrMax;
     private Dialog dialog;
     private String relayState = "OFF";
     private Vibrator vibrator;
+    private double hardThres;
+    private DatabaseReference sensorRef,patientParamsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +55,32 @@ public class DoctorMainActivity extends AppCompatActivity {
             }
         });
 
-        DatabaseReference sensorRef = FirebaseDatabase.getInstance().getReference().child("Sensor");
+
+        patientParamsRef = FirebaseDatabase.getInstance().getReference().child("PatientParams");
+        patientParamsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                patientAge = snapshot.child("age").getValue(Integer.class);
+                hrMax = 220 - patientAge;
+                hardThres = hrMax * 0.93;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        sensorRef = FirebaseDatabase.getInstance().getReference().child("Sensor");
         sensorRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 imuStatus = snapshot.child("imuSensorStatus").getValue().toString();
                 rrStatus = snapshot.child("rrDetection").getValue().toString();
+                bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
+
+
+                // Checking the IMU sensor status
                 if(imuStatus.trim().equals("FALL"))
                 {
                     Toast.makeText(DoctorMainActivity.this, "Patient Falling", Toast.LENGTH_SHORT).show();
@@ -64,11 +88,33 @@ public class DoctorMainActivity extends AppCompatActivity {
                     openAlertDialog();
                 }
 
+                // Check the RR arythmia detection
                 if(rrStatus.trim().equals("ABNORMAL"))
                 {
                     Toast.makeText(DoctorMainActivity.this, "Arythmia Detected", Toast.LENGTH_SHORT).show();
                     vibrator.vibrate(pattern,0);
                     openAlertDialog();
+                }
+
+                // Checking the BPM value
+                if(bpmInt < 60)
+                {
+                    // Alert heart beat too slow
+                    Toast.makeText(DoctorMainActivity.this, "Patient have bradycardia threat", Toast.LENGTH_SHORT).show();
+                    vibrator.vibrate(pattern,0);
+                    bradycardiaAlert();
+                }
+                else if (bpmInt > 100 && bpmInt < hrMax)
+                {
+                    // Alert heart beat too fast
+                    Toast.makeText(DoctorMainActivity.this, "Patient have tachycardia threat", Toast.LENGTH_SHORT).show();
+                    vibrator.vibrate(pattern,0);
+                    tachycardiaAlert();
+                }
+                else if(bpmInt > hrMax)
+                {
+                    // Alert heart beat max
+
                 }
             }
 
@@ -86,6 +132,7 @@ public class DoctorMainActivity extends AppCompatActivity {
     private void openAlertDialog() {
         dialog.setContentView(R.layout.alert_layout);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
 
         startDefib = dialog.findViewById(R.id.defib_start_button);
         cancelDefib = dialog.findViewById(R.id.defib_cancel_button);
@@ -111,6 +158,43 @@ public class DoctorMainActivity extends AppCompatActivity {
                 sendRelayCommand(relayState);
                 dialog.dismiss();
                 Toast.makeText(DoctorMainActivity.this, "Patient is safe", Toast.LENGTH_SHORT).show();
+                vibrator.cancel();
+            }
+        });
+
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                vibrator.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void tachycardiaAlert()
+    {
+        dialog.setContentView(R.layout.tachycardia_alert);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                vibrator.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void bradycardiaAlert()
+    {
+        dialog.setContentView(R.layout.bradycardia_alert);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
                 vibrator.cancel();
             }
         });
