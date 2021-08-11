@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +39,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -47,6 +52,10 @@ public class MainActivity extends AppCompatActivity  {
     private Integer patientAge;
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
+
+    public static final Random RANDOM = new Random();
+    public LineGraphSeries<DataPoint> series;
+    public int lastX = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +65,8 @@ public class MainActivity extends AppCompatActivity  {
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
         NavController navController = Navigation.findNavController(this,R.id.fragment);
         NavigationUI.setupWithNavController(bottomNavigationView,navController);
+
+        series = new LineGraphSeries<DataPoint>();
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -74,6 +85,10 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
 
+    }
 }
