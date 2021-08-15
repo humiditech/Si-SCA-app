@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.Adapters.DoctorAdapter;
 import com.example.sisca_app.Adapters.UserAdapter;
 import com.example.sisca_app.Models.DoctorsModel;
@@ -47,13 +48,14 @@ public class ChatFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private ImageView patientImage;
     private TextView patientNickName;
     private RecyclerView recyclerView;
     private List<DoctorsModel> doctorsList;
     private DoctorAdapter dAdapter;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId;
+    private String userId,imageURL;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +70,7 @@ public class ChatFragment extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
+        patientImage = (ImageView) view.findViewById(R.id.profile_image);
 
 
         DocumentReference documentReference = fStore.collection("users").document(userId);
@@ -75,6 +78,14 @@ public class ChatFragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 patientNickName.setText(value.getString("nName"));
+                imageURL = value.getString("imageURL");
+                if(imageURL.equals("default"))
+                {
+                    patientImage.setImageResource(R.drawable.default_profile);
+                } else
+                {
+                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(patientImage);
+                }
             }
         });
 

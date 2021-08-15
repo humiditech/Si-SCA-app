@@ -27,8 +27,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.LoginActivity;
+import com.example.sisca_app.Models.UsersModel;
 import com.example.sisca_app.R;
+import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -54,10 +57,10 @@ public class ProfileFragment extends Fragment {
     private TextView patientFullName,patientNickName,patientAddress,patientAge,patientDoctorName;
     private Button showQrButton,logoutButton;
     private Dialog qrDialog;
-    private ImageView qrOutput;
+    private ImageView qrOutput,patientImage;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId;
+    private String userId,imageURL;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,6 +76,7 @@ public class ProfileFragment extends Fragment {
         patientAddress = (TextView) view.findViewById(R.id.address);
         patientAge = (TextView) view.findViewById(R.id.age);
         patientDoctorName = (TextView) view.findViewById(R.id.doctor_name);
+        patientImage = (ImageView) view.findViewById(R.id.profile_image);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
@@ -87,6 +91,16 @@ public class ProfileFragment extends Fragment {
                 patientAddress.setText(value.getString("addr"));
                 patientAge.setText(value.getString("age"));
                 patientDoctorName.setText("dr." + value.getString("dName"));
+
+                imageURL = value.getString("imageURL");
+                if(imageURL.equals("default"))
+                {
+                    patientImage.setImageResource(R.drawable.default_profile);
+                } else
+                {
+                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(patientImage);
+                }
+
             }
         });
 

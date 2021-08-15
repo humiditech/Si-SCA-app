@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.MultiColorCircle;
 import com.example.sisca_app.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,8 +63,8 @@ public class DoctorHomeFragment extends Fragment {
     private TextView doctorNickName, bpmValue, conditionValue, conditionDescription,highBPMtv, medBPMtv;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId, bpm, rrDetection;
-    private ImageView relayButton;
+    private String userId, bpm, rrDetection,imageURL;
+    private ImageView relayButton,doctorImage;
     private String relayState = "OFF";
     private DatabaseReference sensorReference,patientParamsReference;
     private Integer bpmInt,hrMax,patientAge;
@@ -92,6 +93,7 @@ public class DoctorHomeFragment extends Fragment {
         highBPMtv = (TextView) view.findViewById(R.id.high_bpm);
         medBPMtv = (TextView) view.findViewById(R.id.med_bpm);
         colorRing = (MultiColorCircle) view.findViewById(R.id.myRing);
+        doctorImage = (ImageView) view.findViewById(R.id.doctor_home_image);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
@@ -127,6 +129,14 @@ public class DoctorHomeFragment extends Fragment {
                 if( value != null && value.exists())
                 {
                     doctorNickName.setText(value.getString("nName"));
+                    imageURL = value.getString("imageURL");
+                    if(imageURL.equals("default"))
+                    {
+                        doctorImage.setImageResource(R.drawable.default_profile);
+                    } else
+                    {
+                        Glide.with(getActivity().getApplicationContext()).load(imageURL).into(doctorImage);
+                    }
                 }
 
             }

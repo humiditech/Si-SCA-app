@@ -1,6 +1,7 @@
 package com.example.sisca_app.fragments;
 
 import android.app.DatePickerDialog;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -11,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -27,11 +30,12 @@ import org.w3c.dom.Text;
 import java.util.Calendar;
 
 public class HistoryFragment extends Fragment {
+    private ImageView patientImage;
     private TextView datepicker,patientNickName,doctorName;
     private DatePickerDialog.OnDateSetListener setListener;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId;
+    private String userId,imageURL;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +47,7 @@ public class HistoryFragment extends Fragment {
         datepicker = (TextView) view.findViewById(R.id.datepicker_tv);
         patientNickName = (TextView) view.findViewById(R.id.patient_history_name);
         doctorName = (TextView) view.findViewById(R.id.doctor_history_name);
+        patientImage = (ImageView) view.findViewById(R.id.patient_history_image);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -54,6 +59,15 @@ public class HistoryFragment extends Fragment {
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 patientNickName.setText(value.getString("nName"));
                 doctorName.setText(value.getString("dName"));
+
+                imageURL = value.getString("imageURL");
+                if(imageURL.equals("default"))
+                {
+                    patientImage.setImageResource(R.drawable.default_profile);
+                } else
+                {
+                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(patientImage);
+                }
             }
         });
 

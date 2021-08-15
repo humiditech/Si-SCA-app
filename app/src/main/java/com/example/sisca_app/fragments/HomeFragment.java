@@ -16,10 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.MainActivity;
 import com.example.sisca_app.MultiColorCircle;
 import com.example.sisca_app.R;
@@ -58,9 +60,10 @@ public class HomeFragment extends Fragment {
     private LineGraphSeries<DataPoint> series;
     private int lastX = 0;
     private TextView patientNickName, bpmValue, conditionValue, conditionDescription, highBPMtv, medBPMtv;
+    private ImageView patientImage;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId, bpm, rrDetection;
+    private String userId, bpm, rrDetection,imageURL;
     private String relayState = "OFF";
     private DatabaseReference sensorReference, patientParamsReference;
     private Integer bpmInt, hrMax, patientAge;
@@ -69,6 +72,7 @@ public class HomeFragment extends Fragment {
     private MultiColorCircle colorRing;
     public Queue dataECG = new LinkedList();
     public Integer bpmIntValue;
+
 
     public HomeFragment() {
         // Required empty   public constructor
@@ -81,6 +85,7 @@ public class HomeFragment extends Fragment {
         if (container == null) return null;
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_home, container, false);
 
+        patientImage = (ImageView) view.findViewById(R.id.patient_home_image);
         patientNickName = (TextView) view.findViewById(R.id.patient_home_name);
         bpmValue = (TextView) view.findViewById(R.id.bpm_value);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -124,6 +129,14 @@ public class HomeFragment extends Fragment {
 
                 if (value != null && value.exists()) {
                     patientNickName.setText(value.getString("nName"));
+                    imageURL = value.getString("imageURL");
+                    if(imageURL.equals("default"))
+                    {
+                        patientImage.setImageResource(R.drawable.default_profile);
+                    } else
+                    {
+                        Glide.with(getActivity().getApplicationContext()).load(imageURL).into(patientImage);
+                    }
                 }
 
             }

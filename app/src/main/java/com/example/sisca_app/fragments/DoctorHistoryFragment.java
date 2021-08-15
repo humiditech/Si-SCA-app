@@ -1,6 +1,7 @@
 package com.example.sisca_app.fragments;
 
 import android.app.DatePickerDialog;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -10,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,7 +33,8 @@ public class DoctorHistoryFragment extends Fragment {
     private DatePickerDialog.OnDateSetListener setListener;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId;
+    private ImageView doctorImage;
+    private String userId,imageURL;
 
     public DoctorHistoryFragment() {
         // Required empty public constructor
@@ -45,6 +49,7 @@ public class DoctorHistoryFragment extends Fragment {
         datepicker = (TextView) view.findViewById(R.id.datepicker_tv);
         doctorNickName = (TextView) view.findViewById(R.id.doctor_history_name);
         patientAge = (TextView) view.findViewById(R.id.patient_age);
+        doctorImage = (ImageView) view.findViewById(R.id.doctor_history_image);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -55,6 +60,14 @@ public class DoctorHistoryFragment extends Fragment {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                 doctorNickName.setText(value.getString("nName"));
+                imageURL = value.getString("imageURL");
+                if(imageURL.equals("default"))
+                {
+                    doctorImage.setImageResource(R.drawable.default_profile);
+                } else
+                {
+                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(doctorImage);
+                }
             }
         });
 

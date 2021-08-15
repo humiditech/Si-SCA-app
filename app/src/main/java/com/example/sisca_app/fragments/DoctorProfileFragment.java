@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.sisca_app.LoginActivity;
 import com.example.sisca_app.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,9 +35,10 @@ public class DoctorProfileFragment extends Fragment {
 
     private TextView doctorFullName, doctorNickname, doctorAddress,doctorAge;
     private Button scanQrButton,logoutButton;
+    private ImageView doctorImage;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId;
+    private String userId,imageURL;
 
 
     @Override
@@ -50,7 +53,7 @@ public class DoctorProfileFragment extends Fragment {
         doctorNickname = (TextView) view.findViewById(R.id.doctor_nickname);
         doctorAddress = (TextView) view.findViewById(R.id.address);
         doctorAge = (TextView) view.findViewById(R.id.age);
-
+        doctorImage = (ImageView) view.findViewById(R.id.profile_image);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
@@ -63,6 +66,15 @@ public class DoctorProfileFragment extends Fragment {
                 doctorNickname.setText(value.getString("nName"));
                 doctorAddress.setText(value.getString("addr"));
                 doctorAge.setText(value.getString("age"));
+
+                imageURL = value.getString("imageURL");
+                if(imageURL.equals("default"))
+                {
+                    doctorImage.setImageResource(R.drawable.default_profile);
+                } else
+                {
+                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(doctorImage);
+                }
             }
         });
 
