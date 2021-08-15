@@ -25,16 +25,18 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.MyHolder> 
     Context context;
     List<DoctorsModel> doctorsList;
     String friendId;
+    boolean isChat;
 
-    public DoctorAdapter(Context context, List<DoctorsModel> doctorsList){
+    public DoctorAdapter(Context context, List<DoctorsModel> doctorsList, boolean isChat) {
         this.context = context;
         this.doctorsList = doctorsList;
+        this.isChat = isChat;
     }
 
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_of_users,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_of_users, parent, false);
         return new MyHolder(view);
     }
 
@@ -44,13 +46,23 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.MyHolder> 
         friendId = doctor.getUid();
         holder.nickname.setText(doctor.getnName());
 
-        if(doctor.getImageURL().equals("default"))
-        {
+        if (doctor.getImageURL().equals("default")) {
             holder.imageView.setImageResource(R.drawable.ic_baseline_person_24);
-        }
-        else
-        {
+        } else {
             Glide.with(context).load(doctor.getImageURL()).into(holder.imageView);
+        }
+
+        if (isChat) {
+            if (doctor.getStatus().equals("online")) {
+                holder.image_online.setVisibility(View.VISIBLE);
+                holder.image_offline.setVisibility(View.GONE);
+            } else {
+                holder.image_online.setVisibility(View.GONE);
+                holder.image_offline.setVisibility(View.VISIBLE);
+            }
+        } else {
+            holder.image_online.setVisibility(View.GONE);
+            holder.image_offline.setVisibility(View.GONE);
         }
     }
 
@@ -62,22 +74,24 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.MyHolder> 
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView nickname;
-        CircleImageView imageView;
+        CircleImageView imageView, image_online, image_offline;
+
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
             nickname = itemView.findViewById(R.id.username_userfrag);
             imageView = itemView.findViewById(R.id.image_user_userfrag);
+            image_online = itemView.findViewById(R.id.image_online);
+            image_offline = itemView.findViewById(R.id.image_offline);
             itemView.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             DoctorsModel doctor = doctorsList.get(getAdapterPosition());
             friendId = doctor.getUid();
             Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("friendId",friendId);
+            intent.putExtra("friendId", friendId);
             context.startActivity(intent);
         }
     }

@@ -220,17 +220,7 @@ public class DoctorMainActivity extends AppCompatActivity {
     private void Status(String status)
     {
         final DocumentReference reference = fStore.collection("doctors").document(userId);
-//        reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-//                HashMap<String,Object> hashMap = new HashMap<>();
-//
-//                hashMap.put("status",status);
-//                Log.d("myTag",status);
-//
-//                reference.update(hashMap);
-//            }
-//        });
+
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("status",status);
         reference.update(hashMap);

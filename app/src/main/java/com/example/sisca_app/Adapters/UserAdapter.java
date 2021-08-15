@@ -30,11 +30,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
 
     Context context;
     List<UsersModel> usersList;
-    List<UserStatusModel> userStatusModelList;
     String friendId;
     boolean isChat;
 
-    public UserAdapter(Context context,List<UsersModel> usersList, boolean isChat) {
+    public UserAdapter(Context context, List<UsersModel> usersList, boolean isChat) {
         this.context = context;
         this.usersList = usersList;
         this.isChat = isChat;
@@ -43,63 +42,34 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_of_users,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_of_users, parent, false);
         return new MyHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         UsersModel user = usersList.get(position);
-//        UserStatusModel userStatus = userStatusModelList.get(position);
         friendId = user.getUid();
         holder.nickname.setText(user.getnName());
 
-        if(user.getImageURL().equals("default"))
-        {
+        if (user.getImageURL().equals("default")) {
             holder.imageView.setImageResource(R.drawable.ic_baseline_person_24);
-        }
-        else
-        {
+        } else {
             Glide.with(context).load(user.getImageURL()).into(holder.imageView);
         }
 
-        if(isChat)
-        {
-            if(user.getStatus().equals("online"))
-            {
+        if (isChat) {
+            if (user.getStatus().equals("online")) {
                 holder.image_online.setVisibility(View.VISIBLE);
                 holder.image_offline.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 holder.image_online.setVisibility(View.GONE);
                 holder.image_offline.setVisibility(View.VISIBLE);
             }
-        }
-        else {
+        } else {
             holder.image_online.setVisibility(View.GONE);
             holder.image_offline.setVisibility(View.GONE);
         }
-
-//        if(isChat)
-//        {
-//            if(userStatus.getStatus().equals("online"))
-//            {
-//                holder.image_online.setVisibility(View.VISIBLE);
-//                holder.image_offline.setVisibility(View.GONE);
-//            }
-//            else
-//            {
-//                holder.image_online.setVisibility(View.GONE);
-//                holder.image_offline.setVisibility(View.VISIBLE);
-//            }
-//        }
-//
-//        else
-//        {
-//            holder.image_online.setVisibility(View.GONE);
-//            holder.image_offline.setVisibility(View.GONE);
-//        }
 
     }
 
@@ -111,7 +81,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView nickname;
-        CircleImageView imageView,image_online,image_offline;
+        CircleImageView imageView, image_online, image_offline;
+
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -123,12 +94,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
         }
 
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             UsersModel user = usersList.get(getAdapterPosition());
             friendId = user.getUid();
             Intent intent = new Intent(context, DoctorChatActivity.class);
-            intent.putExtra("friendId",friendId);
+            intent.putExtra("friendId", friendId);
             context.startActivity(intent);
         }
     }

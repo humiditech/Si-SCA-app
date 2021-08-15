@@ -47,8 +47,8 @@ public class DoctorChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
-        if(container == null) return null;
+        super.onCreateView(inflater, container, savedInstanceState);
+        if (container == null) return null;
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_doctor_chat, container, false);
         doctorNickName = (TextView) view.findViewById(R.id.doctor_chat_name);
         recyclerView = view.findViewById(R.id.recyclerview_users);
@@ -81,14 +81,12 @@ public class DoctorChatFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 userList.clear();
 
-                if(task.isSuccessful()){
-                    for(DocumentSnapshot document :task.getResult())
-                    {
-                        if(document.exists())
-                        {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        if (document.exists()) {
                             UsersModel user = document.toObject(UsersModel.class);
                             userList.add(user);
-                            uAdapter = new UserAdapter(getContext(),userList,true);
+                            uAdapter = new UserAdapter(getContext(), userList, true);
                             recyclerView.setAdapter(uAdapter);
                         }
                     }

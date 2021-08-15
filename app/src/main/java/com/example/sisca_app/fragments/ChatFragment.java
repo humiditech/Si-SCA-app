@@ -99,7 +99,7 @@ public class ChatFragment extends Fragment {
                         if (document.exists()) {
                             DoctorsModel doctor = document.toObject(DoctorsModel.class);
                             doctorsList.add(doctor);
-                            dAdapter = new DoctorAdapter(getContext(), doctorsList);
+                            dAdapter = new DoctorAdapter(getContext(), doctorsList, true);
                             recyclerView.setAdapter(dAdapter);
                         }
                     }

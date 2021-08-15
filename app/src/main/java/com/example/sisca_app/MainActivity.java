@@ -46,6 +46,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -134,13 +135,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
-    }
-
     private void tachycardiaAlert() {
         dialog.setContentView(R.layout.tachycardia_alert);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -168,4 +162,27 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+    private void Status(String status)
+    {
+        final DocumentReference reference = fStore.collection("users").document(userId);
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+        reference.update(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Status("offline");
+    }
+
+
 }

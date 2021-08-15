@@ -2,12 +2,12 @@ package com.example.sisca_app.Models;
 
 public class DoctorsModel {
 
-    String addr, age, emailAddr,fName,imageURL,nName,role,uid;
+    String addr, age, emailAddr,fName,imageURL,nName,role,uid,status;
 
     public DoctorsModel() {
     }
 
-    public DoctorsModel(String addr, String age, String emailAddr, String fName, String imageURL, String nName, String role, String uid) {
+    public DoctorsModel(String addr, String age, String emailAddr, String fName, String imageURL, String nName, String role, String uid, String status) {
         this.addr = addr;
         this.age = age;
         this.emailAddr = emailAddr;
@@ -16,6 +16,7 @@ public class DoctorsModel {
         this.nName = nName;
         this.role = role;
         this.uid = uid;
+        this.status = status;
     }
 
     public String getAddr() {
@@ -80,5 +81,13 @@ public class DoctorsModel {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
