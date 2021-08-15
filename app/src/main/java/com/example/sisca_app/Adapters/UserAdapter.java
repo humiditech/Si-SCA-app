@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.sisca_app.ChatActivity;
 import com.example.sisca_app.DoctorChatActivity;
+import com.example.sisca_app.Models.UserStatusModel;
 import com.example.sisca_app.Models.UsersModel;
 import com.example.sisca_app.R;
 import com.example.sisca_app.fragments.ChatFragment;
@@ -29,11 +30,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
 
     Context context;
     List<UsersModel> usersList;
+    List<UserStatusModel> userStatusModelList;
     String friendId;
+    boolean isChat;
 
-    public UserAdapter(Context context,List<UsersModel> usersList) {
+    public UserAdapter(Context context,List<UsersModel> usersList, boolean isChat) {
         this.context = context;
         this.usersList = usersList;
+        this.isChat = isChat;
     }
 
     @NonNull
@@ -46,6 +50,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         UsersModel user = usersList.get(position);
+//        UserStatusModel userStatus = userStatusModelList.get(position);
         friendId = user.getUid();
         holder.nickname.setText(user.getnName());
 
@@ -58,6 +63,44 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
             Glide.with(context).load(user.getImageURL()).into(holder.imageView);
         }
 
+        if(isChat)
+        {
+            if(user.getStatus().equals("online"))
+            {
+                holder.image_online.setVisibility(View.VISIBLE);
+                holder.image_offline.setVisibility(View.GONE);
+            }
+            else
+            {
+                holder.image_online.setVisibility(View.GONE);
+                holder.image_offline.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            holder.image_online.setVisibility(View.GONE);
+            holder.image_offline.setVisibility(View.GONE);
+        }
+
+//        if(isChat)
+//        {
+//            if(userStatus.getStatus().equals("online"))
+//            {
+//                holder.image_online.setVisibility(View.VISIBLE);
+//                holder.image_offline.setVisibility(View.GONE);
+//            }
+//            else
+//            {
+//                holder.image_online.setVisibility(View.GONE);
+//                holder.image_offline.setVisibility(View.VISIBLE);
+//            }
+//        }
+//
+//        else
+//        {
+//            holder.image_online.setVisibility(View.GONE);
+//            holder.image_offline.setVisibility(View.GONE);
+//        }
+
     }
 
     @Override
@@ -68,12 +111,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyHolder> {
     class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView nickname;
-        CircleImageView imageView;
+        CircleImageView imageView,image_online,image_offline;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
             nickname = itemView.findViewById(R.id.username_userfrag);
             imageView = itemView.findViewById(R.id.image_user_userfrag);
+            image_online = itemView.findViewById(R.id.image_online);
+            image_offline = itemView.findViewById(R.id.image_offline);
             itemView.setOnClickListener(this);
         }
 

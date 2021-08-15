@@ -77,7 +77,7 @@ public class DoctorProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                startActivity(new Intent(getActivity(),LoginActivity.class));
                 getActivity().finish();
             }
         });

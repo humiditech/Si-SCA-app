@@ -10,11 +10,13 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,21 +48,29 @@ import org.w3c.dom.Text;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     private String userId;
-    private Integer patientAge;
+    private Integer patientAge, bpmInt, hrMax;
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
+    private Dialog dialog;
+    private Vibrator vibrator;
+    private double hardThres;
+    private DatabaseReference sensorRef, patientParamsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dialog = new Dialog(this);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        final long[] pattern = {500, 1000}; // 0.5s sleep, 1s vibrate
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
-        NavController navController = Navigation.findNavController(this,R.id.fragment);
-        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+        NavController navController = Navigation.findNavController(this, R.id.fragment);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -77,6 +87,51 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        patientParamsRef = FirebaseDatabase.getInstance().getReference().child("PatientParams");
+        patientParamsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                patientAge = snapshot.child("age").getValue(Integer.class);
+                hrMax = 220 - patientAge;
+                hardThres = hrMax * 0.93;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        sensorRef = FirebaseDatabase.getInstance().getReference().child("Sensor");
+        sensorRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
+
+                // Checking the BPM value
+                if (bpmInt < 60) {
+                    // Alert heart beat too slow
+                    Toast.makeText(MainActivity.this, "Patient have bradycardia threat", Toast.LENGTH_SHORT).show();
+                    vibrator.vibrate(pattern, 0);
+                    bradycardiaAlert();
+                } else if (bpmInt > 100 && bpmInt < hrMax) {
+                    // Alert heart beat too fast
+                    Toast.makeText(MainActivity.this, "Patient have tachycardia threat", Toast.LENGTH_SHORT).show();
+                    vibrator.vibrate(pattern, 0);
+                    tachycardiaAlert();
+                } else if (bpmInt > hrMax) {
+                    // Alert heart beat max
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
     @Override
@@ -84,5 +139,33 @@ public class MainActivity extends AppCompatActivity  {
         super.onResume();
 
 
+    }
+
+    private void tachycardiaAlert() {
+        dialog.setContentView(R.layout.tachycardia_alert);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                vibrator.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void bradycardiaAlert() {
+        dialog.setContentView(R.layout.bradycardia_alert);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                vibrator.cancel();
+            }
+        });
+
+        dialog.show();
     }
 }

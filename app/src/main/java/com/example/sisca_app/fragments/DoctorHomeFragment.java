@@ -119,7 +119,16 @@ public class DoctorHomeFragment extends Fragment {
         documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                doctorNickName.setText(value.getString("nName"));
+                if (error != null) {
+                    Log.d("ERROR", error.getMessage());
+                    return;
+                }
+
+                if( value != null && value.exists())
+                {
+                    doctorNickName.setText(value.getString("nName"));
+                }
+
             }
         });
 
@@ -247,26 +256,49 @@ public class DoctorHomeFragment extends Fragment {
                         myList.add(s);
                         colorRing.setCircleStrokes(myList);
                         bpmValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
-                        if (rrDetection.equals("NORMAL")) {
-                            conditionDescription.setText("Your heartbeat normal and have regular rythm");
-                        } else if (rrDetection.equals("ABNORMAL")) {
-                            conditionDescription.setText("Your heartbeat normal and have irregular rythm");
+                        if(bpmInt< 100)
+                        {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat normal and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat normal and have irregular rythm");
+                            }
+                            conditionValue.setText("Normal");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
+                        } else {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat too fast and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat too fast and have irregular rythm");
+                            }
+                            conditionValue.setText("Tachycardia");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                         }
-                        conditionValue.setText("Normal");
-                        conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
                     } else if (bpmInt > lightThres && bpmInt <= moderateThres) {
                         MultiColorCircle.CustomStrokeObject s = new MultiColorCircle.CustomStrokeObject(100, 0, ContextCompat.getColor(getContext(), R.color.bronze));
                         List<MultiColorCircle.CustomStrokeObject> myList = new ArrayList<>();
                         myList.add(s);
                         colorRing.setCircleStrokes(myList);
                         bpmValue.setTextColor(ContextCompat.getColor(getContext(), R.color.bronze));
-                        if (rrDetection.equals("NORMAL")) {
-                            conditionDescription.setText("Your heartbeat is normal and have regular rythm");
-                        } else if (rrDetection.equals("ABNORMAL")) {
-                            conditionDescription.setText("Your heartbeat is normal and have irregular rythm");
+
+                        if(bpmInt< 100)
+                        {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat is normal and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat is normal and have irregular rythm");
+                            }
+                            conditionValue.setText("Normal");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
+                        } else {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat is too fast and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat is too fast and have irregular rythm");
+                            }
+                            conditionValue.setText("Tachycardia");
+                            conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                         }
-                        conditionValue.setText("Normal");
-                        conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
                     } else if (bpmInt > moderateThres) {
                         MultiColorCircle.CustomStrokeObject s = new MultiColorCircle.CustomStrokeObject(100, 0, ContextCompat.getColor(getContext(), R.color.red));
                         List<MultiColorCircle.CustomStrokeObject> myList = new ArrayList<>();

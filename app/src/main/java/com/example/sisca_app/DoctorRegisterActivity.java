@@ -14,18 +14,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sisca_app.Models.DoctorStatusModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DoctorRegisterActivity extends AppCompatActivity {
@@ -39,6 +46,7 @@ public class DoctorRegisterActivity extends AppCompatActivity {
     private String rDoctorID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_doctor_register);
 
@@ -96,6 +104,7 @@ public class DoctorRegisterActivity extends AppCompatActivity {
                         {
                             Toast.makeText(DoctorRegisterActivity.this, "Registration Success", Toast.LENGTH_SHORT).show();
                             rDoctorID = fAuth.getCurrentUser().getUid();
+//                            setDoctorStatus(rDoctorID,"offline");
                             DocumentReference documentReference = fStore.collection("doctors").document(rDoctorID);
                             Map<String, Object> doctor = new HashMap<>();
                             doctor.put("fName",fullName);
@@ -106,10 +115,11 @@ public class DoctorRegisterActivity extends AppCompatActivity {
                             doctor.put("uid", rDoctorID);
                             doctor.put("imageURL","default");
                             doctor.put("role","doctor");
+                            doctor.put("status", "offline");
                             documentReference.set(doctor).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Log.d("myDebug", "onSuccess : docto profile is created for " + rDoctorID);
+                                    Log.d("myDebug", "onSuccess : doctor profile is created for " + rDoctorID);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -129,4 +139,15 @@ public class DoctorRegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+//    private void setDoctorStatus(final String id, final String status)
+//    {
+//        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("UserStatus/Doctors");
+//        HashMap<String , Object> hashMap = new HashMap<>();
+//
+//        hashMap.put("id",id);
+//        hashMap.put("status",status);
+//
+//        reference.push().setValue(hashMap);
+//    }
 }

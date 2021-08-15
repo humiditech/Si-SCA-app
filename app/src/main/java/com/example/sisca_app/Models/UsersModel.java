@@ -1,9 +1,9 @@
 package com.example.sisca_app.Models;
 
 public class UsersModel {
-    String addr, age, dName, emailAddr, fName, nName, role, uid,imageURL;
+    String addr, age, dName, emailAddr, fName, nName, role, uid,imageURL,status;
 
-    public UsersModel(String addr, String age, String dName, String emailAddr, String fName, String nName,String role, String uid, String imageURL) {
+    public UsersModel(String addr, String age, String dName, String emailAddr, String fName, String nName,String role, String uid, String imageURL, String status) {
         this.addr = addr;
         this.age = age;
         this.dName = dName;
@@ -13,6 +13,7 @@ public class UsersModel {
         this.role = role;
         this.uid = uid;
         this.imageURL = imageURL;
+        this.status = status;
     }
 
     public UsersModel() {
@@ -86,6 +87,12 @@ public class UsersModel {
         this.imageURL = imageURL;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
 

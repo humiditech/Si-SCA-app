@@ -88,7 +88,7 @@ public class DoctorChatFragment extends Fragment {
                         {
                             UsersModel user = document.toObject(UsersModel.class);
                             userList.add(user);
-                            uAdapter = new UserAdapter(getContext(),userList);
+                            uAdapter = new UserAdapter(getContext(),userList,true);
                             recyclerView.setAdapter(uAdapter);
                         }
                     }

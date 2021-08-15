@@ -117,7 +117,15 @@ public class HomeFragment extends Fragment {
         documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                patientNickName.setText(value.getString("nName"));
+                if (error != null) {
+                    Log.d("ERROR", error.getMessage());
+                    return;
+                }
+
+                if (value != null && value.exists()) {
+                    patientNickName.setText(value.getString("nName"));
+                }
+
             }
         });
 
@@ -226,16 +234,21 @@ public class HomeFragment extends Fragment {
                         myList.add(s);
                         colorRing.setCircleStrokes(myList);
                         bpmValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
-                        if (rrDetection.equals("NORMAL")) {
-                            conditionDescription.setText("Your heartbeat normal and have regular rythm");
-                        } else if (rrDetection.equals("ABNORMAL")) {
-                            conditionDescription.setText("Your heartbeat normal and have irregular rythm");
-                        }
-                        if(bpmInt< 100)
-                        {
+
+                        if (bpmInt < 100) {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat normal and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat normal and have irregular rythm");
+                            }
                             conditionValue.setText("Normal");
                             conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
                         } else {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat too fast and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat too fast and have irregular rythm");
+                            }
                             conditionValue.setText("Tachycardia");
                             conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                         }
@@ -245,16 +258,21 @@ public class HomeFragment extends Fragment {
                         myList.add(s);
                         colorRing.setCircleStrokes(myList);
                         bpmValue.setTextColor(ContextCompat.getColor(getContext(), R.color.bronze));
-                        if (rrDetection.equals("NORMAL")) {
-                            conditionDescription.setText("Your heartbeat is normal and have regular rythm");
-                        } else if (rrDetection.equals("ABNORMAL")) {
-                            conditionDescription.setText("Your heartbeat is normal and have irregular rythm");
-                        }
-                        if(bpmInt< 100)
-                        {
+
+                        if (bpmInt < 100) {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat is normal and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat is normal and have irregular rythm");
+                            }
                             conditionValue.setText("Normal");
                             conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
                         } else {
+                            if (rrDetection.equals("NORMAL")) {
+                                conditionDescription.setText("Your heartbeat is too fast and have regular rythm");
+                            } else if (rrDetection.equals("ABNORMAL")) {
+                                conditionDescription.setText("Your heartbeat is too fast and have irregular rythm");
+                            }
                             conditionValue.setText("Tachycardia");
                             conditionValue.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
                         }

@@ -92,7 +92,7 @@ public class DoctorListFragment extends Fragment {
                                 usersList.add(user);
                             }
 
-                            uAdapter = new UserAdapter(getContext(), usersList);
+                            uAdapter = new UserAdapter(getContext(), usersList, true);
                             recyclerView.setAdapter(uAdapter);
                         }
                     }
