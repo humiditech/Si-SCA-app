@@ -12,9 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.sisca_app.ChatActivity;
+import com.example.sisca_app.Models.ChatsModel;
 import com.example.sisca_app.Models.DoctorsModel;
 import com.example.sisca_app.Models.UsersModel;
 import com.example.sisca_app.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -24,8 +32,9 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.MyHolder> 
 
     Context context;
     List<DoctorsModel> doctorsList;
-    String friendId;
+    String friendId, theLastMessage;
     boolean isChat;
+    FirebaseUser fUser;
 
     public DoctorAdapter(Context context, List<DoctorsModel> doctorsList, boolean isChat) {
         this.context = context;
@@ -94,5 +103,43 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.MyHolder> 
             intent.putExtra("friendId", friendId);
             context.startActivity(intent);
         }
+    }
+
+    private void LastMessage(String friendId, TextView last_msg)
+    {
+        theLastMessage = "default";
+        fUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren())
+                {
+                    ChatsModel chats = ds.getValue(ChatsModel.class);
+                    if(fUser.getUid() != null && chats != null)
+                    {
+                        if(chats.getSender().equals(friendId) && chats.getReceiver().equals(fUser.getUid()) || chats.getReceiver().equals(friendId) && chats.getSender().equals(fUser.getUid()) )
+                        {
+                            theLastMessage = chats.getMessage();
+                        }
+                    }
+                }
+
+                switch (theLastMessage)
+                {
+                    case "default":
+                        last_msg.setText("No Message");
+                        break;
+                    default:
+                        last_msg.setText(theLastMessage);
+                }
+                theLastMessage =    "default";
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
