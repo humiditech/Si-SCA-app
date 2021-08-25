@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 
 public class ProfileFragment extends Fragment {
@@ -121,7 +122,7 @@ public class ProfileFragment extends Fragment {
                 if (imageURL.equals("default")) {
                     patientImage.setImageResource(R.drawable.default_profile);
                 } else {
-                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(patientImage);
+                    Glide.with(getApplicationContext()).load(imageURL).into(patientImage);
                 }
 
             }
@@ -249,10 +250,36 @@ public class ProfileFragment extends Fragment {
 
         if (requestCode == GALLERY_CODE && resultCode == RESULT_OK) {
             imageUri = data.getData();
-            String filepath = "Photos/" + "patientprofile_" + userId;
+            String filepath = "PatientPhotos/" + "patientprofile_" + userId;
 
             StorageReference reference = FirebaseStorage.getInstance().getReference(filepath);
             reference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+
+                    task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String imageURL = uri.toString();
+
+                            DocumentReference userReference = fStore.collection("users").document(userId);
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("imageURL", imageURL);
+                            userReference.update(hashMap);
+                        }
+                    });
+                }
+            });
+
+        }
+
+        if (requestCode == CAMERA_CODE && resultCode == RESULT_OK) {
+            Uri uri = imageUri;
+            String filepath = "PatientPhotos/" + "patientprofile_" + userId;
+
+            StorageReference reference = FirebaseStorage.getInstance().getReference(filepath);
+            reference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();

@@ -45,6 +45,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -67,12 +68,12 @@ public class DoctorHomeFragment extends Fragment {
     private ImageView relayButton,doctorImage;
     private String relayState = "OFF";
     private DatabaseReference sensorReference,patientParamsReference;
-    private Integer bpmInt,hrMax,patientAge;
+    private Integer bpmInt,hrMax,patientAge,ecgSignalInt;
     private double lightThres,moderateThres,hardThres;
     private ProgressBar progressBar;
     private MultiColorCircle colorRing;
     public Queue dataECG = new LinkedList();
-    public Integer bpmIntValue;
+    public Integer ecgSignalIntValue;
 
     public DoctorHomeFragment() {
     }
@@ -97,7 +98,7 @@ public class DoctorHomeFragment extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
-        bpmIntValue = 0;
+        ecgSignalIntValue = 0;
 
         colorRing.setWidthOfCircleStroke(15);
         colorRing.setWidthOfBoarderStroke(2);
@@ -108,13 +109,18 @@ public class DoctorHomeFragment extends Fragment {
         graphView.addSeries(series);
         graphView.getGridLabelRenderer().setNumHorizontalLabels(5);
         graphView.getGridLabelRenderer().setHumanRounding(true);
+        graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+//        graphView.getGridLabelRenderer().setVerticalLabelsVisible(false);
         Viewport viewport = graphView.getViewport();
 
-        viewport.setMinY(0);
-        viewport.setMaxY(200);
         viewport.setXAxisBoundsManual(true);
         viewport.setYAxisBoundsManual(true);
+        viewport.setMinX(0);
+        viewport.setMaxX(1000);
+        viewport.setMinY(0);
+        viewport.setMaxY(800);
         viewport.setScalable(true);
+        viewport.setScalableY(true);
         viewport.setScrollable(true);
 
         DocumentReference documentReference = fStore.collection("doctors").document(userId);
@@ -152,8 +158,10 @@ public class DoctorHomeFragment extends Fragment {
                 lightThres = hrMax * 0.5;
                 moderateThres = hrMax * 0.76;
                 hardThres = hrMax * 0.93;
+                float mediumBPM = (float) (hrMax*0.64);
+                String medBPM = new DecimalFormat("#.00").format(mediumBPM);
                 highBPMtv.setText(String.valueOf(hrMax));
-                medBPMtv.setText(String.valueOf(hrMax*0.64));
+                medBPMtv.setText(medBPM);
             }
 
             @Override
@@ -209,7 +217,7 @@ public class DoctorHomeFragment extends Fragment {
 
                         // sleep to slow down the add of entries
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(10);
                         } catch (InterruptedException e) {
                             // manage error
                         }
@@ -235,8 +243,9 @@ public class DoctorHomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 bpm = snapshot.child("ecgBPM").getValue().toString();
                 bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
-                bpmIntValue = bpmInt;
-                myCallback.onCallback(bpmIntValue);
+                ecgSignalInt = snapshot.child("ecgSignal").getValue(Integer.class);
+                ecgSignalIntValue = ecgSignalInt;
+                myCallback.onCallback(ecgSignalInt);
                 bpmValue.setText(bpm);
                 rrDetection = snapshot.child("rrDetection").getValue().toString();
 //                dataECG.offer(bpmInt);

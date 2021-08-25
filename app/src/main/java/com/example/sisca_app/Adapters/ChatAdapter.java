@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,28 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         ChatsModel chats = chatsList.get(position);
 
         holder.messageText.setText(chats.getMessage());
+        if(holder.seenMessage != null && holder.deliveredMessage != null)
+        {
+            if(position == (getItemCount() - 1))
+            {
+                if(chats.isSeen())
+                {
+                    holder.seenMessage.setVisibility(View.VISIBLE);
+                    holder.deliveredMessage.setVisibility(View.GONE);
+                }
+                else
+                {
+                    holder.seenMessage.setVisibility(View.GONE);
+                    holder.deliveredMessage.setVisibility(View.VISIBLE);
+                }
+            }
+            else
+            {
+                holder.seenMessage.setVisibility(View.GONE);
+                holder.deliveredMessage.setVisibility(View.GONE);
+            }
+        }
+
     }
 
     @Override
@@ -58,11 +81,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView messageText;
+        ImageView seenMessage,deliveredMessage;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body);
+            seenMessage = itemView.findViewById(R.id.message_seen);
+            deliveredMessage = itemView.findViewById(R.id.message_delivered);
+
         }
     }
 

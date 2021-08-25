@@ -2,11 +2,13 @@ package com.example.sisca_app.Models;
 
 public class ChatsModel {
     String sender,receiver,message;
+    boolean isSeen;
 
-    public ChatsModel(String sender, String receiver, String message) {
+    public ChatsModel(String sender, String receiver, String message, boolean isSeen) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.isSeen = isSeen;
     }
 
     public ChatsModel() {
@@ -34,5 +36,13 @@ public class ChatsModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isSeen() {
+        return isSeen;
+    }
+
+    public void setSeen(boolean seen) {
+        isSeen = seen;
     }
 }

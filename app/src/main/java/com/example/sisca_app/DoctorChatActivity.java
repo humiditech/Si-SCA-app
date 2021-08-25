@@ -52,6 +52,7 @@ public class DoctorChatActivity extends AppCompatActivity {
     List<ChatsModel> chatList;
     ChatAdapter cAdapter;
     RecyclerView recyclerView;
+    ValueEventListener seenListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +130,34 @@ public class DoctorChatActivity extends AppCompatActivity {
                 et_messages.setText(" ");
             }
         });
+
+        seenMessage(friendId);
+    }
+
+    private void seenMessage(final String friendId)
+    {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chats");
+        seenListener = reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot ds : snapshot.getChildren())
+                {
+                    ChatsModel chats = ds.getValue(ChatsModel.class);
+
+                    if(chats.getReceiver().equals(myId) && chats.getSender().equals(friendId))
+                    {
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("isSeen",true);
+                        ds.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void readMessage(String myId, String friendId) {
@@ -168,8 +197,30 @@ public class DoctorChatActivity extends AppCompatActivity {
         hashMap.put("sender", myId);
         hashMap.put("receiver", friendId);
         hashMap.put("message", message);
+        hashMap.put("isSeen",false);
 
         reference.child("Chats").push().setValue(hashMap);
+    }
+
+    private void Status(String status)
+    {
+        final DocumentReference reference = fStore.collection("doctors").document(myId);
+
+        HashMap<String,Object> hashMap = new HashMap<>();
+        hashMap.put("status",status);
+        reference.update(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Status("offline");
     }
 
 
