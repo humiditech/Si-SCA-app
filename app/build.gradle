@@ -30,6 +30,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.jjoe64:graphview:4.2.2' // graph view
     implementation 'com.karumi:dexter:6.2.1' // for image and camera
     implementation 'com.google.firebase:firebase-auth:21.0.1'

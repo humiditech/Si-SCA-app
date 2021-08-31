@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.sisca_app.DoctorMainActivity;
 import com.example.sisca_app.MultiColorCircle;
 import com.example.sisca_app.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,19 +62,24 @@ public class DoctorHomeFragment extends Fragment {
     private GraphView graphView;
     private LineGraphSeries<DataPoint> series;
     private int lastX = 0;
-    private TextView doctorNickName, bpmValue, conditionValue, conditionDescription,highBPMtv, medBPMtv;
+    private TextView doctorNickName, bpmValue, conditionValue, conditionDescription, highBPMtv, medBPMtv;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fStore;
-    private String userId, bpm, rrDetection,imageURL;
-    private ImageView relayButton,doctorImage;
+    private String userId, bpm, rrDetection, imageURL, btStatus;
+    private ImageView relayButton, doctorImage, btIcon;
     private String relayState = "OFF";
-    private DatabaseReference sensorReference,patientParamsReference;
-    private Integer bpmInt,hrMax,patientAge,ecgSignalInt;
-    private double lightThres,moderateThres,hardThres;
+    private DatabaseReference sensorReference, patientParamsReference;
+    private Integer bpmInt, hrMax, patientAge, ecgSignalInt;
+    private double lightThres, moderateThres, hardThres;
     private ProgressBar progressBar;
     private MultiColorCircle colorRing;
     public Queue dataECG = new LinkedList();
     public Integer ecgSignalIntValue;
+    private static final String TAG = "doctorHomeTAG";
+    Bundle btData;
+    DoctorMainActivity dActivity;
+    Double tmp = 0.0;
+    Integer bufferCounter = 0;
 
     public DoctorHomeFragment() {
     }
@@ -81,9 +87,15 @@ public class DoctorHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
-        if(container == null) return null;
+        super.onCreateView(inflater, container, savedInstanceState);
+        if (container == null) return null;
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_doctor_home, container, false);
+        btData = getArguments();
+        if (btData != null) {
+            Log.d(TAG, btData.getString("btData"));
+        }
+
+        dActivity = (DoctorMainActivity) getActivity();
 
         doctorNickName = (TextView) view.findViewById(R.id.doctor_home_name);
         relayButton = (ImageView) view.findViewById(R.id.defib_button);
@@ -95,6 +107,7 @@ public class DoctorHomeFragment extends Fragment {
         medBPMtv = (TextView) view.findViewById(R.id.med_bpm);
         colorRing = (MultiColorCircle) view.findViewById(R.id.myRing);
         doctorImage = (ImageView) view.findViewById(R.id.doctor_home_image);
+//        btIcon = (ImageView) view.findViewById(R.id.bluetoothIcon);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         userId = fAuth.getCurrentUser().getUid();
@@ -102,7 +115,7 @@ public class DoctorHomeFragment extends Fragment {
 
         colorRing.setWidthOfCircleStroke(15);
         colorRing.setWidthOfBoarderStroke(2);
-        colorRing.setColorOfBoarderStroke(ContextCompat.getColor(getContext(),R.color.black));
+        colorRing.setColorOfBoarderStroke(ContextCompat.getColor(getContext(), R.color.black));
         graphView = (GraphView) view.findViewById(R.id.graphview);
 
         series = new LineGraphSeries();
@@ -132,15 +145,12 @@ public class DoctorHomeFragment extends Fragment {
                     return;
                 }
 
-                if( value != null && value.exists())
-                {
+                if (value != null && value.exists()) {
                     doctorNickName.setText(value.getString("nName"));
                     imageURL = value.getString("imageURL");
-                    if(imageURL.equals("default"))
-                    {
+                    if (imageURL.equals("default")) {
                         doctorImage.setImageResource(R.drawable.default_profile);
-                    } else
-                    {
+                    } else {
                         Glide.with(getActivity().getApplicationContext()).load(imageURL).into(doctorImage);
                     }
                 }
@@ -158,7 +168,7 @@ public class DoctorHomeFragment extends Fragment {
                 lightThres = hrMax * 0.5;
                 moderateThres = hrMax * 0.76;
                 hardThres = hrMax * 0.93;
-                float mediumBPM = (float) (hrMax*0.64);
+                float mediumBPM = (float) (hrMax * 0.64);
                 String medBPM = new DecimalFormat("#.00").format(mediumBPM);
                 highBPMtv.setText(String.valueOf(hrMax));
                 medBPMtv.setText(medBPM);
@@ -173,8 +183,7 @@ public class DoctorHomeFragment extends Fragment {
         relayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(relayState == "OFF")
-                {
+                if (relayState == "OFF") {
                     Toast.makeText(getActivity(), "Defib Triggerred", Toast.LENGTH_SHORT).show();
                     relayState = "ON";
                 } else {
@@ -183,8 +192,7 @@ public class DoctorHomeFragment extends Fragment {
                 sendRelayCommand(relayState);
             }
         });
-
-
+        readSensorData();
         return view;
     }
 
@@ -197,27 +205,46 @@ public class DoctorHomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+//        Log.d("myTag",btStatus);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Activity activity = getActivity();
                 if (activity != null) {
+
+
                     while (true) {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                readSensorData(new MyCallback() {
-                                    @Override
-                                    public void onCallback(Integer value) {
-                                        addEntry(value);
+                                String bluetoothData = dActivity.passBtData();
+//                                String pattern = "-?\\f+";
+                                try {
+                                    if (bluetoothData != null) {
+                                        bufferCounter++;
+                                        tmp = Double.parseDouble(bluetoothData);
+                                        addEntry(Double.parseDouble(bluetoothData));
+//                                    Log.d(TAG, bluetoothData);
+                                    } else {
+                                        Log.d(TAG, "data null");
                                     }
-                                });
+//                                readSensorData(new MyCallback() {
+//                                    @Override
+//                                    public void onCallback(Integer value) {
+//                                        addEntry(value);
+//                                    }
+//                                });
+                                } catch (NumberFormatException ex) {
+                                    addEntry(tmp);
+                                    Log.d(TAG, "Number format exception");
+                                }
+
                             }
                         });
 
                         // sleep to slow down the add of entries
                         try {
-                            Thread.sleep(10);
+                            Thread.sleep(1);
                         } catch (InterruptedException e) {
                             // manage error
                         }
@@ -228,15 +255,19 @@ public class DoctorHomeFragment extends Fragment {
         }).start();
     }
 
-    private void addEntry(Integer value) {
-        series.appendData(new DataPoint(lastX++, value), true, 2000);
+    private void addEntry(Double value) {
+        series.appendData(new DataPoint(lastX++, value), true, 3600);
+        if (bufferCounter > 7200) {
+            series.resetData(new DataPoint[]{});
+            bufferCounter = 0;
+        }
     }
 
     public interface MyCallback {
         void onCallback(Integer value);
     }
 
-    public void readSensorData(MyCallback myCallback) {
+    public void readSensorData() {
         sensorReference.addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -245,7 +276,7 @@ public class DoctorHomeFragment extends Fragment {
                 bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
                 ecgSignalInt = snapshot.child("ecgSignal").getValue(Integer.class);
                 ecgSignalIntValue = ecgSignalInt;
-                myCallback.onCallback(ecgSignalInt);
+//                myCallback.onCallback(ecgSignalInt);
                 bpmValue.setText(bpm);
                 rrDetection = snapshot.child("rrDetection").getValue().toString();
 //                dataECG.offer(bpmInt);
@@ -275,8 +306,7 @@ public class DoctorHomeFragment extends Fragment {
                         myList.add(s);
                         colorRing.setCircleStrokes(myList);
                         bpmValue.setTextColor(ContextCompat.getColor(getContext(), R.color.green_navy));
-                        if(bpmInt< 100)
-                        {
+                        if (bpmInt < 100) {
                             if (rrDetection.equals("NORMAL")) {
                                 conditionDescription.setText("Your heartbeat normal and have regular rythm");
                             } else if (rrDetection.equals("ABNORMAL")) {
@@ -300,8 +330,7 @@ public class DoctorHomeFragment extends Fragment {
                         colorRing.setCircleStrokes(myList);
                         bpmValue.setTextColor(ContextCompat.getColor(getContext(), R.color.bronze));
 
-                        if(bpmInt< 100)
-                        {
+                        if (bpmInt < 100) {
                             if (rrDetection.equals("NORMAL")) {
                                 conditionDescription.setText("Your heartbeat is normal and have regular rythm");
                             } else if (rrDetection.equals("ABNORMAL")) {

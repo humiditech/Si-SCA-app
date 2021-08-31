@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <TextView
                 android:id="@+id/greetings"
                 android:layout_width="wrap_content"
@@ -34,6 +35,7 @@
                 android:textSize="50dp"
                 android:textStyle="bold" />
 
+
             <TextView
                 android:id="@+id/doctor_home_name"
                 android:layout_width="wrap_content"
@@ -42,13 +44,15 @@
                 android:textColor="#FFF"
                 android:textSize="35dp"
                 android:textStyle="bold" />
+
         </LinearLayout>
+
         <ImageView
             android:id="@+id/defib_button"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/defib_button"/>
+            android:src="@drawable/defib_button" />
     </LinearLayout>
 
     <LinearLayout
@@ -65,16 +69,17 @@
             android:layout_marginRight="20dp"
             app:cardBackgroundColor="@color/pale_green"
             app:cardCornerRadius="40dp">
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graphview"
-                android:layout_gravity="center"
-                android:layout_width="280dp"
-                android:layout_height="80dp"/>
 
-            <!--            <com.github.mikephil.charting.charts.LineChart-->
-            <!--                android:id="@+id/linechart"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"/>-->
+            <!--            <com.jjoe64.graphview.GraphView-->
+            <!--                android:id="@+id/graphview"-->
+            <!--                android:layout_width="280dp"-->
+            <!--                android:layout_height="80dp"-->
+            <!--                android:layout_gravity="center" />-->
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/linechart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </androidx.cardview.widget.CardView>
 
@@ -109,9 +114,9 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
+                        android:padding="5dp"
                         android:progressDrawable="@drawable/linear_gauge_bpm"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -223,9 +228,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginTop="5dp"
-            >
+            android:layout_marginRight="20dp">
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/bpm_circular_gauge"
                 android:layout_width="156dp"
@@ -235,49 +240,49 @@
                 app:cardCornerRadius="40dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 tools:ignore="MissingConstraints">
+
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/heart_beat_2"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="15dp"
-                    />
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/heart_beat_2" />
 
                 <RelativeLayout
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     android:layout_gravity="center">
+
                     <com.example.sisca_app.MultiColorCircle
                         android:id="@+id/myRing"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:id="@+id/bpm_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="25dp"
                         android:text="120"
                         android:textColor="@color/bronze"
                         android:textSize="40dp"
-                        android:textStyle="bold"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="25dp"
-                        />
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="bpm"
-                        android:textSize="25dp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="69dp"
-                        />
+                        android:text="bpm"
+                        android:textSize="25dp" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="137dp"
                     android:layout_height="137dp"
-                    android:background="@drawable/blackring"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:background="@drawable/blackring" />
 
 
             </androidx.cardview.widget.CardView>
@@ -287,52 +292,55 @@
                 android:layout_width="156dp"
                 android:layout_height="200dp"
                 app:cardBackgroundColor="@color/pale_green"
-                app:layout_constraintRight_toRightOf="parent"
                 app:cardCornerRadius="40dp"
+                app:layout_constraintRight_toRightOf="parent"
                 tools:ignore="MissingConstraints">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
-                        android:src="@drawable/heart_status"
+                        android:layout_marginLeft="15dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginLeft="15dp"/>
+                        android:src="@drawable/heart_status" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="18dp"
+                        android:fontFamily="sans-serif-condensed"
+                        android:gravity="center_horizontal"
                         android:text="Overall Condition"
                         android:textColor="@color/bronze"
-                        android:fontFamily="sans-serif-condensed"
-                        android:gravity="center_horizontal" />
+                        android:textSize="18dp" />
+
                     <TextView
                         android:id="@+id/condition"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
-                        android:text="OK"
-                        android:textSize="25dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/green_navy"
-                        android:gravity="center_horizontal"
                         android:background="@drawable/status_rect"
-                        />
+                        android:gravity="center_horizontal"
+                        android:text="OK"
+                        android:textColor="@color/green_navy"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/condition_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Kondisi jantung kondusif dan normal"
-                        android:gravity="center_horizontal"
-                        android:textColor="#fff"
-                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"/>
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:gravity="center_horizontal"
+                        android:text="Kondisi jantung kondusif dan normal"
+                        android:textColor="#fff" />
 
                 </LinearLayout>
 

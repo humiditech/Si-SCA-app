@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                                             Log.d("TAG", "DocumentSnapshot data: " + document.getData());
                                             role = document.getString("role");
                                             Toast.makeText(LoginActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(getApplicationContext(), DoctorMainActivity.class));
+                                            startActivity(new Intent(getApplicationContext(), BluetoothActivity.class));
                                         } else {
                                             Log.d("TAG", "No such document");
                                             Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
