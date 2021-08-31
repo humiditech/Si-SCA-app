@@ -56,9 +56,11 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
@@ -69,7 +71,7 @@ import java.util.Queue;
 public class DoctorHomeFragment extends Fragment implements OnChartValueSelectedListener {
 
     private boolean wasRun = true;
-//    private GraphView graphView;
+    //    private GraphView graphView;
     private LineGraphSeries<DataPoint> series;
     private int lastX = 0;
     private TextView doctorNickName, bpmValue, conditionValue, conditionDescription, highBPMtv, medBPMtv;
@@ -93,7 +95,9 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
 
     // MPChart
     private LineChart mpChartGraph;
-    private Thread thread;
+//    private Thread thread;
+    private String[] parsedData = {"0.0"};
+    private float maxEKGValue = 800f;
 
     public DoctorHomeFragment() {
     }
@@ -104,10 +108,10 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         super.onCreateView(inflater, container, savedInstanceState);
         if (container == null) return null;
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_doctor_home, container, false);
-        btData = getArguments();
-        if (btData != null) {
-            Log.d(TAG, btData.getString("btData"));
-        }
+//        btData = getArguments();
+//        if (btData != null) {
+//            Log.d(TAG, btData.getString("btData"));
+//        }
 
         dActivity = (DoctorMainActivity) getActivity();
 
@@ -130,6 +134,8 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         colorRing.setWidthOfBoarderStroke(2);
         colorRing.setColorOfBoarderStroke(ContextCompat.getColor(getContext(), R.color.black));
         mpChartGraph = (LineChart) view.findViewById(R.id.linechart);
+
+        initMPChart(mpChartGraph);
 
 //        graphView = (GraphView) view.findViewById(R.id.graphview);
 
@@ -216,71 +222,46 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         reference.child("relayState").setValue(relayState);
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-////        Log.d("myTag",btStatus);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Activity activity = getActivity();
-//                if (activity != null) {
-//
-//
-//                    while (true) {
-//                        activity.runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                String bluetoothData = dActivity.passBtData();
-////                                String pattern = "-?\\f+";
-//                                try {
-//                                    if (bluetoothData != null) {
-//                                        bufferCounter++;
-//                                        tmp = Double.parseDouble(bluetoothData);
-//                                        addEntry(Double.parseDouble(bluetoothData));
-////                                    Log.d(TAG, bluetoothData);
-//                                    } else {
-//                                        Log.d(TAG, "data null");
-//                                    }
-////                                readSensorData(new MyCallback() {
-////                                    @Override
-////                                    public void onCallback(Integer value) {
-////                                        addEntry(value);
-////                                    }
-////                                });
-//                                } catch (NumberFormatException ex) {
-//                                    addEntry(tmp);
-//                                    Log.d(TAG, "Number format exception");
-//                                }
-//
-//                            }
-//                        });
-//
-//                        // sleep to slow down the add of entries
-//                        try {
-//                            Thread.sleep(1);
-//                        } catch (InterruptedException e) {
-//                            // manage error
-//                        }
-//                    }
-//                }
-//
-//            }
-//        }).start();
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
 
-//    private void addEntry(Double value) {
-//        series.appendData(new DataPoint(lastX++, value), true, 3600);
-//        if (bufferCounter > 7200) {
-//            series.resetData(new DataPoint[]{});
-//            bufferCounter = 0;
-//        }
-//    }
-//
-//    public interface MyCallback {
-//        void onCallback(Integer value);
-//    }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getActivity();
+                if (activity != null) {
+
+                    while (true) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String bluetoothData = dActivity.passBtData();
+                                parsedData = bluetoothData.split("\n");
+                                try {
+                                    if (bluetoothData != null) {
+                                        addEntry(Float.parseFloat(parsedData[-1]));
+                                        Log.d(TAG,bluetoothData);
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                        });
+
+                        try{
+                            Thread.sleep(10);
+                        } catch (InterruptedException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
+        }).start();
+    }
+
 
     public void readSensorData() {
         sensorReference.addValueEventListener(new ValueEventListener() {
@@ -389,10 +370,9 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
     }
 
 
-    private void initMPChart(LineChart graph)
-    {
+    private void initMPChart(LineChart graph) {
         graph.setOnChartValueSelectedListener(this);
-        graph.getDescription().setEnabled(true);
+        graph.getDescription().setEnabled(false);
         graph.setTouchEnabled(true);
 
         graph.setDragEnabled(true);
@@ -413,7 +393,7 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         xl.setTextColor(Color.BLACK);
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
-        xl.setEnabled(true);
+        xl.setEnabled(false);
 
         YAxis leftAxis = graph.getAxisLeft();
         leftAxis.setTextColor(Color.BLACK);
@@ -421,6 +401,9 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         leftAxis.setAxisMinimum(0f);
         leftAxis.setDrawGridLines(true);
         leftAxis.setGridColor(Color.BLACK);
+
+        YAxis rightAxis = graph.getAxisRight();
+        rightAxis.setEnabled(false);
     }
 
     @Override
@@ -433,7 +416,7 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
 
     }
 
-    private LineDataSet createSet(){
+    private LineDataSet createSet() {
         LineDataSet set = new LineDataSet(null, "ECG Signal");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setColor(Color.BLACK);
@@ -441,28 +424,36 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         set.setCircleRadius(0);
         set.setFillAlpha(65);
         set.setFillColor(Color.BLACK);
+        set.setHighLightColor(Color.rgb(244, 117, 117));
         set.setValueTextColor(Color.BLUE);
         set.setValueTextSize(9f);
+        set.setCubicIntensity(0.2f);
+        set.setDrawCircles(false);
+        set.setCircleRadius(0f);
+        set.setDrawCircleHole(false);
         set.setDrawValues(false);
         return set;
     }
 
-    private void addEntry(float value)
-    {
+    private void addEntry(float value) {
         LineData data = mpChartGraph.getData();
 
-        if(data != null){
+        if (data != null) {
             ILineDataSet set = data.getDataSetByIndex(0);
 
-            if(set == null) {
+            if (set == null) {
                 set = createSet();
                 data.addDataSet(set);
             }
 
-            data.addEntry(new Entry(set.getEntryCount(), value),0);
+            data.addEntry(new Entry(set.getEntryCount(), value), 0);
+
+            data.notifyDataChanged();
             mpChartGraph.notifyDataSetChanged();
-            mpChartGraph.setVisibleXRangeMaximum(120);
+            mpChartGraph.setVisibleXRangeMaximum(360);
             mpChartGraph.moveViewToX(data.getEntryCount());
         }
     }
+
+
 }
