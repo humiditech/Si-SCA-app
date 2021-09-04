@@ -66,7 +66,7 @@ public class DoctorHistoryFragment extends Fragment {
                     doctorImage.setImageResource(R.drawable.default_profile);
                 } else
                 {
-                    Glide.with(getActivity().getApplicationContext()).load(imageURL).into(doctorImage);
+                    if(getActivity() != null) Glide.with(getActivity().getApplicationContext()).load(imageURL).into(doctorImage);
                 }
             }
         });

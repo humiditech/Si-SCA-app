@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Si-SCA App</string>
-    <string name="app_version">"Ver 1.0"</string>
+    <string name="app_version">"Ver 1.1"</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--    Heart Rate-->
     <!--    a. Frequency-->

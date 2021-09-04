@@ -71,6 +71,7 @@ public class BluetoothActivity extends AppCompatActivity {
         } else {
             initList(new ArrayList<BluetoothDevice>());
         }
+
         searchBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +99,7 @@ public class BluetoothActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
     }
 

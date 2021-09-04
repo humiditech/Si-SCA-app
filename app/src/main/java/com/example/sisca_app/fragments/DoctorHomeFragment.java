@@ -95,8 +95,8 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
 
     // MPChart
     private LineChart mpChartGraph;
-//    private Thread thread;
-    private String[] parsedData = {"0.0"};
+    //    private Thread thread;
+    private String[] parsedData = {"0.0","0.0","0.0"};
     private float maxEKGValue = 800f;
 
     public DoctorHomeFragment() {
@@ -108,10 +108,6 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         super.onCreateView(inflater, container, savedInstanceState);
         if (container == null) return null;
         RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.fragment_doctor_home, container, false);
-//        btData = getArguments();
-//        if (btData != null) {
-//            Log.d(TAG, btData.getString("btData"));
-//        }
 
         dActivity = (DoctorMainActivity) getActivity();
 
@@ -136,26 +132,6 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
         mpChartGraph = (LineChart) view.findViewById(R.id.linechart);
 
         initMPChart(mpChartGraph);
-
-//        graphView = (GraphView) view.findViewById(R.id.graphview);
-
-//        series = new LineGraphSeries();
-//        graphView.addSeries(series);
-//        graphView.getGridLabelRenderer().setNumHorizontalLabels(5);
-//        graphView.getGridLabelRenderer().setHumanRounding(true);
-//        graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
-//        graphView.getGridLabelRenderer().setVerticalLabelsVisible(false);
-//        Viewport viewport = graphView.getViewport();
-//
-//        viewport.setXAxisBoundsManual(true);
-//        viewport.setYAxisBoundsManual(true);
-//        viewport.setMinX(0);
-//        viewport.setMaxX(1000);
-//        viewport.setMinY(0);
-//        viewport.setMaxY(800);
-//        viewport.setScalable(true);
-//        viewport.setScalableY(true);
-//        viewport.setScrollable(true);
 
         DocumentReference documentReference = fStore.collection("doctors").document(userId);
         documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
@@ -237,11 +213,14 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
                             @Override
                             public void run() {
                                 String bluetoothData = dActivity.passBtData();
-                                parsedData = bluetoothData.split("\n");
+                                if(bluetoothData != null)
+                                {
+                                    parsedData = bluetoothData.split("\n");
+                                }
                                 try {
-                                    if (bluetoothData != null) {
-                                        addEntry(Float.parseFloat(parsedData[-1]));
-                                        Log.d(TAG,bluetoothData);
+                                    if(bluetoothData != null){
+                                        addEntry(Float.parseFloat(parsedData[0]));
+                                        Log.d(TAG, bluetoothData);
                                     }
                                 } catch (NumberFormatException ex) {
                                     ex.printStackTrace();
@@ -249,10 +228,9 @@ public class DoctorHomeFragment extends Fragment implements OnChartValueSelected
                             }
                         });
 
-                        try{
+                        try {
                             Thread.sleep(10);
-                        } catch (InterruptedException e)
-                        {
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }

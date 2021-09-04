@@ -2,6 +2,7 @@ package com.example.sisca_app.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -25,6 +26,15 @@ import com.bumptech.glide.Glide;
 import com.example.sisca_app.MainActivity;
 import com.example.sisca_app.MultiColorCircle;
 import com.example.sisca_app.R;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,10 +64,10 @@ import java.util.Random;
 
 import io.perfmark.Tag;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements OnChartValueSelectedListener {
 
     private boolean wasRun = true;
-    private GraphView graphView;
+//    private GraphView graphView;
     private LineGraphSeries<DataPoint> series;
     private int lastX = 0;
     private TextView patientNickName, bpmValue, conditionValue, conditionDescription, highBPMtv, medBPMtv;
@@ -74,6 +84,10 @@ public class HomeFragment extends Fragment {
     public Queue dataECG = new LinkedList();
     public Integer ecgSignalIntValue;
 
+    // MP Chart
+    private LineChart mpChartGraph;
+    private String[] parsedData = {"0.0"};
+    private float maxEKGValue = 800f;
 
     public HomeFragment() {
         // Required empty   public constructor
@@ -103,26 +117,29 @@ public class HomeFragment extends Fragment {
         colorRing.setWidthOfCircleStroke(15);
         colorRing.setWidthOfBoarderStroke(2);
         colorRing.setColorOfBoarderStroke(ContextCompat.getColor(getContext(), R.color.black));
-        graphView = (GraphView) view.findViewById(R.id.graphview);
+        mpChartGraph = (LineChart) view.findViewById(R.id.linechart);
 
-        series = new LineGraphSeries();
-        graphView.addSeries(series);
-        graphView.getGridLabelRenderer().setNumHorizontalLabels(5);
-        graphView.getGridLabelRenderer().setHumanRounding(true);
-        graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
-//        graphView.getGridLabelRenderer().setVerticalLabelsVisible(false);
-        Viewport viewport = graphView.getViewport();
-
+        initMPChart(mpChartGraph);
+//        graphView = (GraphView) view.findViewById(R.id.graphview);
+//
+//        series = new LineGraphSeries();
+//        graphView.addSeries(series);
+//        graphView.getGridLabelRenderer().setNumHorizontalLabels(5);
+//        graphView.getGridLabelRenderer().setHumanRounding(true);
+//        graphView.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+////        graphView.getGridLabelRenderer().setVerticalLabelsVisible(false);
+//        Viewport viewport = graphView.getViewport();
+//
+////        viewport.setMinX(0);
+//        viewport.setXAxisBoundsManual(true);
+//        viewport.setYAxisBoundsManual(true);
 //        viewport.setMinX(0);
-        viewport.setXAxisBoundsManual(true);
-        viewport.setYAxisBoundsManual(true);
-        viewport.setMinX(0);
-        viewport.setMaxX(1000);
-        viewport.setMinY(0);
-        viewport.setMaxY(800);
-        viewport.setScalable(true);
-        viewport.setScalableY(true);
-        viewport.setScrollable(true);
+//        viewport.setMaxX(1000);
+//        viewport.setMinY(0);
+//        viewport.setMaxY(800);
+//        viewport.setScalable(true);
+//        viewport.setScalableY(true);
+//        viewport.setScrollable(true);
 
         DocumentReference documentReference = fStore.collection("users").document(userId);
         documentReference.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
@@ -170,54 +187,55 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        readSensorData();
 
         return view;
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Activity activity = getActivity();
-                if (activity != null) {
-                    while (true) {
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                readSensorData(new MyCallback() {
-                                    @Override
-                                    public void onCallback(Integer value) {
-                                        addEntry(value);
-                                    }
-                                });
-                            }
-                        });
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Activity activity = getActivity();
+//                if (activity != null) {
+//                    while (true) {
+//                        activity.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                readSensorData(new MyCallback() {
+//                                    @Override
+//                                    public void onCallback(Integer value) {
+//                                        addEntry(value);
+//                                    }
+//                                });
+//                            }
+//                        });
+//
+//                        // sleep to slow down the add of entries
+//                        try {
+//                            Thread.sleep(10);
+//                        } catch (InterruptedException e) {
+//                            // manage error
+//                        }
+//                    }
+//                }
+//
+//            }
+//        }).start();
+//    }
 
-                        // sleep to slow down the add of entries
-                        try {
-                            Thread.sleep(10);
-                        } catch (InterruptedException e) {
-                            // manage error
-                        }
-                    }
-                }
+//    private void addEntry(Integer value) {
+//        series.appendData(new DataPoint(lastX++, value), true, 2000);
+//    }
+//
+//    public interface MyCallback {
+//        void onCallback(Integer value);
+//    }
 
-            }
-        }).start();
-    }
-
-    private void addEntry(Integer value) {
-        series.appendData(new DataPoint(lastX++, value), true, 2000);
-    }
-
-    public interface MyCallback {
-        void onCallback(Integer value);
-    }
-
-    public void readSensorData(MyCallback myCallback) {
+    public void readSensorData() {
         sensorReference.addValueEventListener(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -226,7 +244,7 @@ public class HomeFragment extends Fragment {
                 bpmInt = snapshot.child("ecgBPM").getValue(Integer.class);
                 ecgSignalInt = snapshot.child("ecgSignal").getValue(Integer.class);
                 ecgSignalIntValue = ecgSignalInt;
-                myCallback.onCallback(ecgSignalInt);
+//                myCallback.onCallback(ecgSignalInt);
                 bpmValue.setText(bpm);
                 rrDetection = snapshot.child("rrDetection").getValue().toString();
 //                dataECG.offer(bpmInt);
@@ -322,6 +340,92 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+
+    private void initMPChart(LineChart graph)
+    {
+        graph.setOnChartValueSelectedListener(this);
+        graph.getDescription().setEnabled(false);
+        graph.setTouchEnabled(true);
+
+        graph.setDragEnabled(true);
+        graph.setScaleEnabled(true);
+        graph.setDrawGridBackground(false);
+
+        graph.setPinchZoom(true);
+
+        graph.setBackgroundColor(Color.WHITE);
+
+        LineData data = new LineData();
+        data.setValueTextColor(Color.BLACK);
+
+        // add empty data
+        graph.setData(data);
+
+        XAxis xl = graph.getXAxis();
+        xl.setTextColor(Color.BLACK);
+        xl.setDrawGridLines(false);
+        xl.setAvoidFirstLastClipping(true);
+        xl.setEnabled(false);
+
+        YAxis leftAxis = graph.getAxisLeft();
+        leftAxis.setTextColor(Color.BLACK);
+        leftAxis.setAxisMaximum(800f);
+        leftAxis.setAxisMinimum(0f);
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGridColor(Color.BLACK);
+
+        YAxis rightAxis = graph.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+
+    }
+
+    @Override
+    public void onNothingSelected() {
+
+    }
+
+    private LineDataSet createSet() {
+        LineDataSet set = new LineDataSet(null, "ECG Signal");
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setColor(Color.BLACK);
+        set.setLineWidth(2f);
+        set.setCircleRadius(0);
+        set.setFillAlpha(65);
+        set.setFillColor(Color.BLACK);
+        set.setHighLightColor(Color.rgb(244, 117, 117));
+        set.setValueTextColor(Color.BLUE);
+        set.setValueTextSize(9f);
+        set.setCubicIntensity(0.2f);
+        set.setDrawCircles(false);
+        set.setCircleRadius(0f);
+        set.setDrawCircleHole(false);
+        set.setDrawValues(false);
+        return set;
+    }
+
+    private void addEntry(float value) {
+        LineData data = mpChartGraph.getData();
+
+        if (data != null) {
+            ILineDataSet set = data.getDataSetByIndex(0);
+
+            if (set == null) {
+                set = createSet();
+                data.addDataSet(set);
+            }
+
+            data.addEntry(new Entry(set.getEntryCount(), value), 0);
+
+            data.notifyDataChanged();
+            mpChartGraph.notifyDataSetChanged();
+            mpChartGraph.setVisibleXRangeMaximum(360);
+            mpChartGraph.moveViewToX(data.getEntryCount());
+        }
     }
 }
 

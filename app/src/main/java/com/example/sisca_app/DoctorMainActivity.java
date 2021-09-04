@@ -97,7 +97,7 @@ public class DoctorMainActivity extends AppCompatActivity {
         mDevice = bundle.getParcelable(BluetoothActivity.DEVICE_EXTRA);
         mDeviceUUID = UUID.fromString(bundle.getString(BluetoothActivity.DEVICE_UUID));
         mMaxChars = bundle.getInt(BluetoothActivity.BUFFER_SIZE);
-        Log.d(TAG,"Ready");
+        Log.d(TAG, "Ready");
 
 //        doctorHomeFragment = new DoctorHomeFragment();
 //        fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -275,12 +275,11 @@ public class DoctorMainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void Status(String status)
-    {
+    private void Status(String status) {
         final DocumentReference reference = fStore.collection("doctors").document(userId);
 
-        HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put("status",status);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
         reference.update(hashMap);
     }
 
@@ -320,17 +319,17 @@ public class DoctorMainActivity extends AppCompatActivity {
 
     // -------------------------------------- BLUETOOTH --------------------------------------------
 
-    private class ReadInput implements Runnable{
+    private class ReadInput implements Runnable {
         private boolean bStop = false;
         private Thread t;
         Handler handler = new Handler();
 
-        public ReadInput(){
+        public ReadInput() {
             t = new Thread(this, "Input Thread");
             t.start();
         }
 
-        public boolean isRunning(){
+        public boolean isRunning() {
             return t.isAlive();
         }
 
@@ -339,57 +338,54 @@ public class DoctorMainActivity extends AppCompatActivity {
             InputStream inputStream;
             try {
                 inputStream = mBTSocket.getInputStream();
-                while (!bStop)
-                {
+                while (!bStop) {
 
                     byte[] buffer = new byte[256];
-                    if(inputStream.available() > 0){
+                    if (inputStream.available() > 0) {
 
                         inputStream.read(buffer);
                         int i = 0;
 
-                        for(i = 0; i < buffer.length && buffer[i] != 0; i++){
+                        for (i = 0; i < buffer.length && buffer[i] != 0; i++) {
                         }
-                        strInput = new String(buffer,0,i);
+                        strInput = new String(buffer, 0, i);
 
-                        if(receiveText)
-                        {
+                        if (receiveText) {
 
-                           final Runnable r = new Runnable() {
+                            final Runnable r = new Runnable() {
 
-                               @Override
-                               public void run() {
-                                   Log.d(TAG,strInput);
+                                @Override
+                                public void run() {
+                                    Log.d(TAG, strInput);
 //                                   btData = new Bundle();
 //                                   btData.putString("btData",strInput);
 //                                   doctorHomeFragment = new DoctorHomeFragment();
 //                                   doctorHomeFragment.setArguments(btData);
-                               }
-                           };
+                                }
+                            };
 
-                           handler.postDelayed(r,0); //handler delay
+                            handler.postDelayed(r, 0); //handler delay
                         }
                     }
                     Thread.sleep(0); // Thread delay
                 }
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        public void stop(){
+        public void stop() {
             bStop = true;
         }
     }
 
-    public String passBtData()
-    {
+    public String passBtData() {
         return strInput;
     }
 
-    private class ConnectBT extends AsyncTask<Void, Void, Void>{
+    private class ConnectBT extends AsyncTask<Void, Void, Void> {
         private boolean mConnectSuccessful = true;
 
         @Override
@@ -402,9 +398,11 @@ public class DoctorMainActivity extends AppCompatActivity {
 
             try {
                 if (mBTSocket == null || !mIsBluetoothConnected) {
-                    mBTSocket = mDevice.createInsecureRfcommSocketToServiceRecord(mDeviceUUID);
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    mBTSocket.connect();
+                    if (mDevice != null && mDeviceUUID != null) {
+                        mBTSocket = mDevice.createInsecureRfcommSocketToServiceRecord(mDeviceUUID);
+                        BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
+                        mBTSocket.connect();
+                    }
                 }
             } catch (IOException e) {
 // Unable to connect to device
@@ -431,7 +429,7 @@ public class DoctorMainActivity extends AppCompatActivity {
         }
     }
 
-    private class DisconnectBT extends AsyncTask<Void,Void,Void>{
+    private class DisconnectBT extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -439,15 +437,15 @@ public class DoctorMainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if(mReadThread != null){
+            if (mReadThread != null) {
                 mReadThread.stop();
-                while (mReadThread.isRunning());
+                while (mReadThread.isRunning()) ;
                 mReadThread = null;
             }
 
             try {
                 mBTSocket.close();
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
@@ -457,7 +455,7 @@ public class DoctorMainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mIsBluetoothConnected = false;
-            if(mIsUserInitiatedDisconnect){
+            if (mIsUserInitiatedDisconnect) {
                 finish();
             }
         }
@@ -466,9 +464,6 @@ public class DoctorMainActivity extends AppCompatActivity {
     private void msg(String s) {
         Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 
 }
